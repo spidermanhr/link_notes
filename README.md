@@ -1,6 +1,5 @@
 # link_notes
 <h3>Linkovi i bilješke</h3>
-<p>
         <h1>Upute za korištenje aplikacije Upravitelj Linkovima i Bilješkama</h1>
         <p>Dobrodošli u tvoju osobnu aplikaciju za organizaciju linkova i bilješki! Aplikacija ti omogućuje da jednostavno spremaš, pregledavaš, uređuješ i brišeš web linkove i osobne bilješke. Također, možeš ih izvesti i uvesti za sigurnosnu kopiju ili prijenos.</p>
         <p>Aplikacija se sastoji od dvije glavne sekcije: <strong>Upravitelj Linkovima</strong> (lijeva strana) i <strong>Moje Bilješke</strong> (desna strana).</p>
@@ -76,4 +75,3 @@
 
         <p>Aplikacija automatski sprema tvoje podatke u lokalnu memoriju preglednika, tako da će tvoji linkovi i bilješke biti dostupni svaki put kad otvoriš aplikaciju.</p>
         <p>Slobodno eksperimentiraj s funkcionalnostima i uživaj u organiziranju!</p>
-</p>
