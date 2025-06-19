@@ -240,8 +240,8 @@
         .link-grid {
             display: grid;
             /* Postavljamo minimalnu širinu kolone na 250px, što bi trebalo omogućiti tri stupca.
-               Koristimo auto-fit umjesto auto-fill kako bi se stupci "skupljali"
-               ako ima manje elemenata, ali se širili ako nema dovoljno za 3. */
+                Koristimo auto-fit umjesto auto-fill kako bi se stupci "skupljali"
+                ako ima manje elemenata, ali se širili ako nema dovoljno za 3. */
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             padding: 10px 0;
@@ -640,6 +640,40 @@
             margin-bottom: 5px;
         }
 
+        /* Novi stil za backup podsjetnik */
+        .backup-reminder {
+            background-color: #ffc107; /* Žuta pozadina */
+            color: #333;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky; /* Sticky pozicija da ostane vidljiv pri skrolanju */
+            top: 70px; /* Ispod navbara */
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap; /* Omogući prelamanje na manjim ekranima */
+        }
+        .backup-reminder .backup-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .backup-reminder .backup-button:hover {
+            background-color: #0056b3;
+        }
+
+
         /* Responzivnost */
         @media (max-width: 992px) {
             .main-wrapper {
@@ -670,6 +704,9 @@
             }
             body {
                 padding-top: 100px; /* Povećaj padding ako se navbar preklopi na 2 reda */
+            }
+            .backup-reminder {
+                top: 100px; /* Prilagodi poziciju podsjetnika za manje ekrane */
             }
         }
         @media (max-width: 768px) {
@@ -712,7 +749,8 @@
             .info-tooltip-container .tooltip-content::after {
                 right: 15px; /* Održavaj strelicu desno */
             }
-        </style>
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -742,6 +780,8 @@
     </nav>
 
     <div class="main-wrapper">
+        <div id="backupReminder" style="display: none;"></div> 
+
         <div class="container" id="linksSection">
             <h1>Upravitelj Linkovima</h1>
 
@@ -841,24 +881,24 @@
             <h3>1. Dodaj bilješku:</h3>
             <ul>
                 <li>Klikni na gumb <strong>"Dodaj"</strong> za otvaranje obrasca.</li>
-                <li>U polje <strong>"Naslov bilješke"</strong> unesi opcionalni naslov.</li>
-                <li>U polje <strong>"Unesite tekst bilješke ovdje..."</strong> unesi sadržaj bilješke.</li>
-                <li>Klikni na gumb <strong>"Dodaj Bilješku"</strong>. Bilješka će se pojaviti na listi spremljenih bilješki.</li>
+                <li>U polje <strong>"Naslov bilješke"</strong> unesi kratak naslov za svoju bilješku.</li>
+                <li>U polje <strong>"Sadržaj bilješke"</strong> unesi tekst bilješke.</li>
+                <li>Klikni na gumb <strong>"Dodaj Bilješku"</strong>. Bilješka će se pojaviti na listi.</li>
             </ul>
 
             <h3>2. Spremljene bilješke:</h3>
             <ul>
-                <li>Svaka bilješka prikazana je kao "post-it" kartica.</li>
-                <li><strong>Otvori/Zatvori bilješku:</strong> Klikni na gumb <strong>"Otvori"</strong> (ili "Zatvori") u zaglavlju bilješke da proširiš ili skupiš njen sadržaj.</li>
-                <li><strong>Paginacija:</strong> Kao i kod linkova, ako imaš mnogo bilješki, one će biti podijeljene na stranice (<strong>15 bilješki po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju.</li>
+                <li>Sve tvoje spremljene bilješke prikazane su u mreži, izgledaju kao "ljepljive bilješke".</li>
+                <li><strong>Otvori/Zatvori:</strong> Klikni na gumb <strong>"Otvori"</strong> (ili "Zatvori") u zaglavlju bilješke da prikažeš/sakriješ cijeli sadržaj bilješke.</li>
+                <li><strong>Paginacija:</strong> Ako imaš mnogo bilješki, one će biti podijeljene na stranice (<strong>15 bilješki po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju kroz stranice.</li>
                 <li><strong>Premještanje (Drag & Drop):</strong> Bilješke možeš preuređivati unutar trenutne stranice povlačenjem i ispuštanjem. Samo klikni i drži bilješku, povuci je na željeno mjesto i pusti. (Ovo ne radi dok je aktiviran "Način uređivanja").</li>
             </ul>
 
             <h3>3. Uređivanje i brisanje bilješki (način uređivanja):</h3>
             <ol>
-                <li>Klikni na gumb <strong>"Uredi"</strong>. Gumb će postati crven, a na svakoj bilješci pojavit će se gumbi "Obriši" i "Uredi".</li>
+                <li>Klikni na gumb <strong>"Uredi"</strong>. Gumb će postati crven, a na svakoj bilješci pojavit će se gumbi "Obriši" i "Uredi". Gumb "Otvori/Zatvori" bit će privremeno skriven.</li>
                 <li><strong>Brisanje:</strong> Klikni na <strong>"Obriši"</strong> pored bilješke koju želiš ukloniti. Potvrdi brisanje.</li>
-                <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored bilješke. Naslov i tekst će se pretvoriti u polja za unos. Upiši novi naslov i/ili tekst i klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene. Bilješka će se automatski otvoriti kada je uređuješ.</li>
+                <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored bilješke. Naslov i sadržaj će se pretvoriti u polja za unos. Upiši novi naslov i/ili sadržaj, te klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene.</li>
                 <li>Kada završiš s uređivanjem, ponovno klikni na gumb <strong>"Završi uređivanje"</strong> (crveni gumb) za izlaz iz načina uređivanja.</li>
             </ol>
 
@@ -868,1104 +908,822 @@
                 <li><strong>Uvoz (.json):</strong> Klikni na <strong>"Uvoz (.json)"</strong>, odaberi JSON datoteku s bilješkama sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće bilješke</strong> ili da <strong>dodaš nove bilješke</strong> postojećima.</li>
                 <li><strong>Obriši:</strong> Klikni na <strong>"Obriši"</strong> za trajno brisanje svih spremljenih bilješki. Budi oprezan, ova radnja se ne može poništiti!</li>
             </ul>
+
+            <p><strong>Napomena o Local Storage-u:</strong> Svi tvoji podaci (linkovi i bilješke) spremaju se direktno u tvoj web preglednik. To znači da ostaju privatni i nisu poslani na nikakav server. Međutim, ako obrišeš povijest pregledavanja ili podatke stranice, tvoji podaci mogu biti izgubljeni. Zato je izvoz podataka ključan za sigurnost!</p>
+            <p>Sretno s organizacijom!</p>
         </div>
     </div>
 
     <div id="aboutModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal('aboutModal')">&times;</span>
-            <h1>O aplikaciji</h1>
-            <p>Ova jednostavna aplikacija za upravljanje linkovima i bilješkama stvorena je kao praktično rješenje za organizaciju tvojih digitalnih resursa.</p>
-            <p>Omogućuje ti da:</p>
+            <h1>O aplikaciji Linkovi i Bilješke</h1>
+            <p>Ova je aplikacija jednostavan i intuitivan alat za lokalno upravljanje tvojim digitalnim sadržajem – specifično, web linkovima i osobnim bilješkama.</p>
+            <h3>Cilj aplikacije:</h3>
             <ul>
-                <li><strong>Spremaš i organiziraš web linkove</strong> s naslovima.</li>
-                <li><strong>Zapisuješ i organiziraš osobne bilješke</strong>.</li>
-                <li>Koristiš **paginaciju** za lakše pregledavanje velikog broja stavki.</li>
-                <li>**Uređuješ i brišeš** pojedinačne stavke.</li>
-                <li>**Premještaš linkove i bilješke** metodom povlačenja i ispuštanja (drag & drop) unutar trenutne stranice.</li>
-                <li>**Izvoziš i uvoziš** podatke u JSON formatu za sigurnosnu kopiju ili prijenos između preglednika/uređaja.</li>
+                <li>Pružiti korisnicima brz i jednostavan način za spremanje i organizaciju važnih web adresa.</li>
+                <li>Omogućiti stvaranje i uređivanje osobnih bilješki u formatu "ljepljivih bilješki" za brze podsjetnike i ideje.</li>
+                <li>Osigurati potpunu privatnost podataka jer se sve pohranjuje isključivo u lokalnu memoriju preglednika korisnika (Local Storage).</li>
+                <li>Omogućiti korisnicima punu kontrolu nad svojim podacima putem funkcija izvoza i uvoza, čime se olakšava sigurnosna kopija i prijenos podataka.</li>
             </ul>
-            <p>Svi podaci pohranjuju se isključivo u lokalnu memoriju tvog preglednika, osiguravajući privatnost i brzi pristup. Uživaj u organizaciji!</p>
-            <p style="text-align: right; margin-top: 20px; font-size: 0.9em; color: #666;">Verzija 0.6 | 2025</p>
+            <h3>Tehnologije korištene:</h3>
+            <ul>
+                <li><strong>HTML5:</strong> Struktura i semantika web stranice.</li>
+                <li><strong>CSS3:</strong> Dizajn i stilizacija aplikacije, uključujući responzivni dizajn za različite veličine ekrana.</li>
+                <li><strong>JavaScript (Vanilla JS):</strong> Sva interaktivna funkcionalnost, upravljanje podacima (Local Storage), dodavanje/brisanje/uređivanje linkova i bilješki, paginacija i Drag & Drop funkcionalnost.</li>
+            </ul>
+            <p>Aplikacija je dizajnirana da bude lagana i brza, bez potrebe za internetskom vezom nakon početnog učitavanja datoteke, te bez ovisnosti o vanjskim bibliotekama ili frameworkovima.</p>
+            <p>Uživajte u korištenju!</p>
         </div>
     </div>
 
     <div id="authorModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal('authorModal')">&times;</span>
-            <h1>Informacije o autoru</h1>
-            <p><strong>Autor:</strong> Gemini (Googleov AI asistent)</p>
-            <p><strong>Nositelj ideje:</strong> Davor Đurinić</p>
-            <p><strong>Verzija:</strong> 0.6</p>
-            <p><strong>Datum:</strong> 19. lipnja 2025.</p>
-            <p>Ova aplikacija je razvijena s ciljem pružanja jednostavnog i učinkovitog alata za osobnu organizaciju.</p>
-        </div>
-    </div>
-
-    <div id="firstTimeNoteModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeModal('firstTimeNoteModal')">&times;</span>
-            <h1>Važna napomena o podacima</h1>
-            <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u **lokalnu memoriju (Local Storage)** web preglednika koji koristiš.</p>
-            <p>To znači da:</p>
-            <ul>
-                <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
-                <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
-                <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
-                <li>**<span style="color: red;">Vrlo važno:</span> Ne premještaj ni preimenuj ovu HTML datoteku nakon što uneseš podatke!** Ako to učiniš, tvoji spremljeni linkovi i bilješke neće biti vidljivi, jer ih preglednik povezuje s originalnom lokacijom datoteke.</li>
-                <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
-            </ul>
-            <p style="text-align: center; margin-top: 20px;"><button onclick="closeModal('firstTimeNoteModal')">Razumijem</button></p>
+            <h1>O autoru</h1>
+            <p>Pozdrav! Ja sam Davor, strastveni samouki developer koji voli stvarati jednostavne i korisne alate.</p>
+            <p>Ova aplikacija "Linkovi i Bilješke" nastala je iz osobne potrebe za boljom organizacijom digitalnog sadržaja, a želja mi je bila stvoriti nešto što je potpuno privatno, radi lokalno i ne zahtijeva nikakve vanjske servise ili korisničke račune.</p>
+            <p>Kroz razvoj sam nastojao primijeniti principe čistog koda i responzivnog dizajna kako bi aplikacija bila ugodna za korištenje na svim uređajima.</p>
+            <p>Ako imaš pitanja, prijedloge za poboljšanja ili si primijetio/la bug, slobodno se javi! Iako je ovo osobni projekt, uvijek sam otvoren za feedback.</p>
+            <p>Hvala ti što koristiš moju aplikaciju!</p>
         </div>
     </div>
 
     <div id="addLinkModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal('addLinkModal')">&times;</span>
-            <h2>Dodaj Link</h2>
+            <h2>Dodaj Novi Link</h2>
             <input type="text" id="linkTitle" placeholder="Naslov linka" required>
             <input type="url" id="linkUrl" placeholder="URL linka (npr. https://www.primjer.com)" required>
             <button onclick="addLink()">Dodaj Link</button>
-            <button class="cancel-btn" onclick="closeModal('addLinkModal')">Odustani</button>
         </div>
     </div>
 
     <div id="addNoteModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal('addNoteModal')">&times;</span>
-            <h2>Dodaj Bilješku</h2>
-            <input type="text" id="noteTitle" placeholder="Naslov bilješke (opcionalno)">
-            <textarea id="noteText" placeholder="Unesite tekst bilješke ovdje..." rows="4" required></textarea>
+            <h2>Dodaj Novu Bilješku</h2>
+            <input type="text" id="noteTitle" placeholder="Naslov bilješke" required>
+            <textarea id="noteContent" placeholder="Sadržaj bilješke" rows="5" required></textarea>
             <button onclick="addNote()">Dodaj Bilješku</button>
-            <button class="cancel-btn" onclick="closeModal('addNoteModal')">Odustani</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            loadLinks();
-            loadNotes();
+        let links = [];
+        let notes = [];
+        const linksPerPage = 15;
+        const notesPerPage = 15;
+        let currentLinkPage = 1;
+        let currentNotePage = 1;
+        let isEditModeLinks = false;
+        let isEditModeNotes = false;
+        let draggedItem = null; // Za drag and drop
 
-            // Dodaj event listenere za Drag & Drop na gridove
-            document.getElementById('linkGrid').addEventListener('dragover', handleDragOver);
-            document.getElementById('linkGrid').addEventListener('drop', (e) => handleDrop(e, 'link'));
-            document.getElementById('notesGrid').addEventListener('dragover', handleDragOver);
-            document.getElementById('notesGrid').addEventListener('drop', (e) => handleDrop(e, 'note'));
-            
-            // Zatvori modal klikom izvan sadržaja
-            window.onclick = function(event) {
-                const helpModal = document.getElementById('helpModal');
-                const aboutModal = document.getElementById('aboutModal');
-                const authorModal = document.getElementById('authorModal');
-                const firstTimeNoteModal = document.getElementById('firstTimeNoteModal');
-                const addLinkModal = document.getElementById('addLinkModal'); // Novi modal
-                const addNoteModal = document.getElementById('addNoteModal'); // Novi modal
-
-
-                if (event.target == helpModal) {
-                    closeModal('helpModal');
-                }
-                if (event.target == aboutModal) {
-                    closeModal('aboutModal');
-                }
-                if (event.target == authorModal) {
-                    closeModal('authorModal');
-                }
-                if (event.target == firstTimeNoteModal) {
-                    closeModal('firstTimeNoteModal');
-                }
-                if (event.target == addLinkModal) { // Zatvori i ovaj modal
-                    closeModal('addLinkModal');
-                }
-                if (event.target == addNoteModal) { // Zatvori i ovaj modal
-                    closeModal('addNoteModal');
-                }
-            }
-
-            // Prikaz "Važne napomene" samo prvi put
-            const hasSeenNote = localStorage.getItem('hasSeenFirstTimeNote');
-            if (!hasSeenNote) {
-                openModal('firstTimeNoteModal');
-            }
-        });
-
-        let editModeLinks = false;
-        let editModeNotes = false;
-
-        // PAGINACIJA ZA LINKOVE
-        const linksPerPage = 15; // Promijenjeno na 15
-        let currentPageLinks = 1;
-
-        // PAGINACIJA ZA BILJEŠKE
-        const notesPerPage = 15; // Promijenjeno na 15
-        let currentPageNotes = 1;
-
-        // Varijable za Drag & Drop
-        let draggedItem = null; // Pohranjuje DOM element koji se trenutno povlači
-        let draggedItemGlobalIndex = -1; // Globalni indeks povučenog elementa u izvornom nizu
-
-        // --- FUNKCIJE ZA MODALNE PROZORE ---
+        // --- POMOĆNE FUNKCIJE ZA MODALE ---
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
-            if (modalId === 'firstTimeNoteModal') {
-                localStorage.setItem('hasSeenFirstTimeNote', 'true'); // Postavi flag nakon otvaranja
-            }
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-
-        // --- FUNKCIJE ZA DRAG & DROP ---
-
-        function handleDragStart(e, type) {
-            // Provjeri je li uređivanje aktivno - ako jest, ne dopusti povlačenje
-            if ((type === 'link' && editModeLinks) || (type === 'note' && editModeNotes)) {
-                e.preventDefault();
-                return;
-            }
-
-            draggedItem = e.target;
-            // Postavi globalni indeks povučenog elementa
-            draggedItemGlobalIndex = parseInt(e.target.dataset.index);
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', e.target.dataset.index); // Pohrani indeks u dataTransfer
-            
-            // Dodaj klasu za vizualni feedback
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault(); // Obavezno za omogućavanje dropa
-            e.dataTransfer.dropEffect = 'move';
-
-            const targetItem = e.target.closest('.link-item') || e.target.closest('.note-item');
-            const gridContainer = e.target.closest('.link-grid') || e.target.closest('.notes-grid');
-
-            // Ukloni drag-over klasu sa svih ostalih elemenata
-            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
-
-            if (targetItem && targetItem !== draggedItem) {
-                targetItem.classList.add('drag-over');
-            } else if (!targetItem && gridContainer && gridContainer.children.length === 0) {
-                // Ako je grid prazan i povlači se iznad njega
-                gridContainer.classList.add('drag-over');
-            }
-        }
-
-        function handleDragLeave(e) {
-            e.target.classList.remove('drag-over');
-            const targetItem = e.target.closest('.link-item') || e.target.closest('.note-item');
-            if (targetItem) {
-                targetItem.classList.remove('drag-over');
-            }
-        }
-
-        function handleDragEnd(e) {
-            // Ukloni sve klase za vizualni feedback
-            e.target.classList.remove('dragging');
-            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
-            draggedItem = null;
-            draggedItemGlobalIndex = -1;
-        }
-        
-        function handleDrop(e, type) {
-            e.preventDefault();
-            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
-
-            if (!draggedItem) return;
-
-            const droppedOverItem = e.target.closest('.link-item') || e.target.closest('.note-item');
-            const gridContainer = e.target.closest('.link-grid') || e.target.closest('.notes-grid');
-
-            let items = (type === 'link') ? getLinks() : getNotes();
-            
-            // Pronađi originalni indeks povučenog elementa unutar trenutno prikazanih elemenata
-            // Ovo je važno jer draggedItemGlobalIndex referencira originalni, globalni array
-            const draggedItemCurrentPageIndex = items.slice((type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage), (type === 'link' ? (currentPageLinks - 1) : (currentPageLinks - 1)) * (type === 'link' ? linksPerPage : notesPerPage) + (type === 'link' ? linksPerPage : notesPerPage))
-                                                   .findIndex(item => item === items[draggedItemGlobalIndex]);
-
-            // Ako je dropano na prazan grid
-            if (!droppedOverItem && gridContainer && gridContainer.children.length === 0) {
-                // Ako je dropano na isti prazan grid odakle je povučeno, ne radi ništa
-                if (draggedItem.parentNode.id === gridContainer.id) {
-                    return; 
+        // Zatvori modal ako korisnik klikne izvan njega
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
                 }
-                // Logika za premještanje u prazan grid (npr. s druge stranice ili iz drugog tipa podataka)
-                // Trenutno ova aplikacija ne podržava premještanje između stranica ili tipova (link/note)
-                // Ako se element povlači na prazan grid (gdje nema drugih elemenata), 
-                // samo će se ponovno prikazati na istoj poziciji ako je s iste stranice.
-                // Za složeniju logiku premještanja u prazan grid s druge stranice,
-                // treba implementirati prijenos podataka između stranica ili čak tipova.
-                
-                // Za sada, ako je cilj prazan grid, samo osvježi prikaz.
-                if (type === 'link') displayLinks(currentPageLinks);
-                else displayNotes(currentPageNotes);
-                return;
-            }
+            });
+        };
 
-
-            // Pronađi indeks elementa na koji je dropano unutar cijelog niza
-            let droppedOverItemGlobalIndex = -1;
-            if (droppedOverItem) {
-                 droppedOverItemGlobalIndex = parseInt(droppedOverItem.dataset.index);
-            }
-
-            if (draggedItemGlobalIndex === droppedOverItemGlobalIndex || draggedItemGlobalIndex === -1) {
-                // Ako se pokušava dropati na isti element ili indeks nije validan
-                if (type === 'link') displayLinks(currentPageLinks);
-                else displayNotes(currentPageNotes);
-                return;
-            }
-
-            const [removed] = items.splice(draggedItemGlobalIndex, 1);
-            items.splice(droppedOverItemGlobalIndex, 0, removed);
-
-            if (type === 'link') {
-                saveLinks(items);
-                displayLinks(currentPageLinks);
-            } else {
-                saveNotes(items);
-                displayNotes(currentPageNotes);
-            }
-        }
-
-
-        // --- FUNKCIJE ZA LINKOVE (izmijenjene za Drag & Drop) ---
-
-        function getLinks() {
-            const linksString = localStorage.getItem('links');
-            return linksString ? JSON.parse(linksString) : [];
-        }
-
-        function saveLinks(links) {
+        // --- FUNKCIJE ZA LINKOVE ---
+        function saveLinks() {
             localStorage.setItem('links', JSON.stringify(links));
+        }
+
+        function loadLinks() {
+            const storedLinks = localStorage.getItem('links');
+            if (storedLinks) {
+                links = JSON.parse(storedLinks);
+            }
+            displayLinks(currentLinkPage);
         }
 
         function addLink() {
             const titleInput = document.getElementById('linkTitle');
             const urlInput = document.getElementById('linkUrl');
-
             const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
+            let url = urlInput.value.trim();
 
-            if (title === '' || url === '') {
-                alert('Molimo unesite i naslov i URL linka.');
-                return;
-            }
-
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                alert('Molimo unesite valjan URL koji počinje s http:// ili https://');
-                return;
-            }
-
-            const links = getLinks();
-            links.push({ title, url });
-            saveLinks(links);
-            
-            currentPageLinks = Math.ceil(links.length / linksPerPage);
-            displayLinks(currentPageLinks);
-            setupPaginationLinks();
-
-            titleInput.value = '';
-            urlInput.value = '';
-            closeModal('addLinkModal'); // Zatvori modal nakon dodavanja
-        }
-
-        function deleteLink(index) {
-            if (confirm('Jeste li sigurni da želite obrisati ovaj link?')) {
-                let links = getLinks();
-                links.splice(index, 1);
-                saveLinks(links);
-
-                const totalPages = Math.ceil(links.length / linksPerPage);
-                if (currentPageLinks > totalPages && totalPages > 0) {
-                    currentPageLinks = totalPages;
-                } else if (totalPages === 0) {
-                    currentPageLinks = 1;
+            if (title && url) {
+                // Provjeri i dodaj http:// ili https:// ako nedostaje
+                if (!/^https?:\/\//i.test(url)) {
+                    url = 'http://' + url;
                 }
-
-                displayLinks(currentPageLinks);
-                setupPaginationLinks();
+                links.push({ title, url });
+                saveLinks();
+                titleInput.value = '';
+                urlInput.value = '';
+                closeModal('addLinkModal');
+                displayLinks(currentLinkPage);
+            } else {
+                alert('Molimo unesite i naslov i URL linka.');
             }
         }
 
-        function displayLinks(page = currentPageLinks) {
+        function displayLinks(page) {
             const linkGrid = document.getElementById('linkGrid');
             const noLinksMessage = document.getElementById('noLinksMessage');
             linkGrid.innerHTML = '';
-
-            const allLinks = getLinks();
-
-            if (allLinks.length === 0) {
+            
+            if (links.length === 0) {
                 noLinksMessage.style.display = 'block';
-                document.getElementById('paginationLinks').innerHTML = '';
-                linkGrid.classList.remove('single-item-layout'); // Ukloni layout za jednu stavku
+                document.getElementById('paginationLinks').innerHTML = ''; // Sakrij paginaciju ako nema linkova
                 return;
             } else {
                 noLinksMessage.style.display = 'none';
             }
 
-            const startIndex = (page - 1) * linksPerPage;
-            const endIndex = startIndex + linksPerPage;
-            const linksToDisplay = allLinks.slice(startIndex, endIndex);
-
-            // Provjeri broj stavki na trenutnoj stranici za prilagodbu layouta
-            if (linksToDisplay.length === 1) {
+            // Provjeri layout za jednu stavku
+            if (links.length === 1 && !isEditModeLinks) { // Samo ako nije u modu uređivanja
                 linkGrid.classList.add('single-item-layout');
             } else {
                 linkGrid.classList.remove('single-item-layout');
             }
 
+            const startIndex = (page - 1) * linksPerPage;
+            const endIndex = startIndex + linksPerPage;
+            const linksToDisplay = links.slice(startIndex, endIndex);
 
-            linksToDisplay.forEach((link, localIndex) => {
-                const globalIndex = startIndex + localIndex;
-
+            linksToDisplay.forEach((link, indexInPage) => {
+                const globalIndex = startIndex + indexInPage;
                 const linkItem = document.createElement('div');
                 linkItem.classList.add('link-item');
-                if (editModeLinks) {
-                    linkItem.classList.add('editing');
-                }
-                linkItem.dataset.index = globalIndex;
-                linkItem.setAttribute('draggable', !editModeLinks); // Omogući/onemogući povlačenje ovisno o modu
-                linkItem.style.cursor = editModeLinks ? 'default' : 'grab'; // Promijeni kursor
-
-                linkItem.addEventListener('dragstart', (e) => handleDragStart(e, 'link'));
-                linkItem.addEventListener('dragleave', handleDragLeave); // Dodano za vizualni feedback
-                linkItem.addEventListener('dragend', handleDragEnd); // Dodano za čišćenje
+                linkItem.setAttribute('draggable', !isEditModeLinks); // Omogući drag samo ako nije u modu uređivanja
+                linkItem.dataset.index = globalIndex; // Dodaj data-index za lakše pronalaženje u listi
 
                 linkItem.innerHTML = `
-                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-title-display">${link.title}</a>
+                    <h3 class="link-title-display"><a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a></h3>
+                    <p class="url-display">${link.url}</p>
                     <input type="text" class="edit-title-input" value="${link.title}">
-                    <span class="url-display">${link.url}</span>
-                    <button class="delete-btn" onclick="deleteLink(${globalIndex})">Obriši</button>
-                    <button class="edit-btn" onclick="startEditLink(${globalIndex})">Uredi</button>
                     <div class="edit-buttons">
-                        <button class="save-btn" onclick="saveEditLink(${globalIndex})">Spremi</button>
+                        <button class="save-btn" onclick="saveEditedLink(${globalIndex})">Spremi</button>
                         <button class="cancel-btn" onclick="cancelEditLink(${globalIndex})">Odustani</button>
                     </div>
+                    <button class="edit-btn" onclick="editLink(${globalIndex})">Uredi</button>
+                    <button class="delete-btn" onclick="deleteLink(${globalIndex})">Obriši</button>
                 `;
                 linkGrid.appendChild(linkItem);
             });
-            setupPaginationLinks();
+
+            // Primijeni mod uređivanja ako je aktivan
+            if (isEditModeLinks) {
+                document.querySelectorAll('#linkGrid .link-item').forEach(item => {
+                    item.classList.add('editing');
+                });
+            } else {
+                document.querySelectorAll('#linkGrid .link-item').forEach(item => {
+                    item.classList.remove('editing');
+                });
+            }
+            setupLinkDragAndDrop(); // Ponovno postavi D&D listenere
+            setupLinkPagination();
         }
 
-        function setupPaginationLinks() {
-            const paginationContainer = document.getElementById('paginationLinks');
-            paginationContainer.innerHTML = '';
-            const allLinks = getLinks();
-            const pageCount = Math.ceil(allLinks.length / linksPerPage);
+        function setupLinkDragAndDrop() {
+            const linkItems = document.querySelectorAll('#linkGrid .link-item');
+            linkItems.forEach(item => {
+                item.addEventListener('dragstart', handleLinkDragStart);
+                item.addEventListener('dragover', handleLinkDragOver);
+                item.addEventListener('dragleave', handleLinkDragLeave);
+                item.addEventListener('drop', handleLinkDrop);
+                item.addEventListener('dragend', handleLinkDragEnd);
+            });
+        }
 
-            if (pageCount <= 1) {
-                paginationContainer.style.display = 'none';
+        function handleLinkDragStart(e) {
+            if (isEditModeLinks) { // Ne dopusti drag u modu uređivanja
+                e.preventDefault();
                 return;
-            } else {
-                paginationContainer.style.display = 'flex';
             }
+            draggedItem = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.index);
+            setTimeout(() => {
+                draggedItem.classList.add('dragging');
+            }, 0);
+        }
+
+        function handleLinkDragOver(e) {
+            e.preventDefault();
+            if (draggedItem && draggedItem !== e.target && e.target.classList.contains('link-item')) {
+                e.dataTransfer.dropEffect = 'move';
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function handleLinkDragLeave(e) {
+            if (e.target.classList.contains('link-item')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleLinkDrop(e) {
+            e.preventDefault();
+            if (draggedItem && draggedItem !== e.target && e.target.classList.contains('link-item')) {
+                const dropTarget = e.target;
+                const draggedIndex = parseInt(draggedItem.dataset.index);
+                const dropIndex = parseInt(dropTarget.dataset.index);
+
+                // Makni klase za povlačenje
+                dropTarget.classList.remove('drag-over');
+                draggedItem.classList.remove('dragging');
+
+                // Ažuriraj redoslijed u "links" arrayu
+                const [movedLink] = links.splice(draggedIndex, 1);
+                links.splice(dropIndex, 0, movedLink);
+
+                saveLinks();
+                displayLinks(currentLinkPage); // Ponovno iscrtaj trenutnu stranicu
+            }
+        }
+
+        function handleLinkDragEnd(e) {
+            draggedItem.classList.remove('dragging');
+            document.querySelectorAll('.link-item.drag-over').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+            draggedItem = null;
+        }
+
+        function setupLinkPagination() {
+            const paginationLinks = document.getElementById('paginationLinks');
+            paginationLinks.innerHTML = '';
+            const totalPages = Math.ceil(links.length / linksPerPage);
+
+            if (totalPages <= 1) return;
 
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Prethodna';
-            prevButton.disabled = currentPageLinks === 1;
-            prevButton.onclick = () => goToPageLinks(currentPageLinks - 1);
-            paginationContainer.appendChild(prevButton);
-
-            for (let i = 1; i <= pageCount; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                if (i === currentPageLinks) {
-                    button.classList.add('active');
+            prevButton.disabled = currentLinkPage === 1;
+            prevButton.onclick = () => {
+                if (currentLinkPage > 1) {
+                    currentLinkPage--;
+                    displayLinks(currentLinkPage);
                 }
-                button.onclick = () => goToPageLinks(i);
-                paginationContainer.appendChild(button);
+            };
+            paginationLinks.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentLinkPage) {
+                    pageButton.classList.add('active');
+                }
+                pageButton.onclick = () => {
+                    currentLinkPage = i;
+                    displayLinks(currentLinkPage);
+                };
+                paginationLinks.appendChild(pageButton);
             }
 
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Sljedeća';
-            nextButton.disabled = currentPageLinks === pageCount;
-            nextButton.onclick = () => goToPageLinks(currentPageLinks + 1);
-            paginationContainer.appendChild(nextButton);
-        }
-
-        function goToPageLinks(page) {
-            currentPageLinks = page;
-            displayLinks(currentPageLinks);
-            document.getElementById('linksSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-
-        function loadLinks() {
-            displayLinks(currentPageLinks);
-            setupPaginationLinks();
-        }
-
-        function exportLinks() {
-            const links = getLinks();
-            if (links.length === 0) {
-                alert('Nema linkova za izvoz.');
-                return;
-            }
-
-            const dataStr = JSON.stringify(links, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'moji_linkovi.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importLinks(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    const importedLinks = JSON.parse(e.target.result);
-                    if (!Array.isArray(importedLinks)) {
-                        alert('Datoteka ne sadrži valjan format linkova. Očekivan je niz.');
-                        return;
-                    }
-
-                    const validImportedLinks = importedLinks.filter(link =>
-                        typeof link.title === 'string' &&
-                        typeof link.url === 'string' &&
-                        (link.url.startsWith('http://') || link.url.startsWith('https://'))
-                    );
-
-                    if (importedLinks.length !== validImportedLinks.length) {
-                        const confirmContinue = confirm('Neki uvezeni linkovi nisu valjani i bit će zanemareni. Želite li nastaviti?');
-                        if (!confirmContinue) {
-                            return;
-                        }
-                    }
-
-                    if (confirm('Želite li zamijeniti SVE postojeće linkove s uvezenima? (OK za zamjenu, Odustani za dodavanje)')) {
-                        saveLinks(validImportedLinks);
-                        alert('Linkovi su uspješno uvezeni (zamijenjeni).');
-                    } else {
-                        const existingLinks = getLinks();
-                        const combinedLinks = existingLinks.concat(validImportedLinks);
-                        saveLinks(combinedLinks);
-                        alert('Linkovi su uspješno uvezeni (dodani postojećim).');
-                    }
-
-                    currentPageLinks = 1;
-                    displayLinks();
-                    setupPaginationLinks();
-                } catch (error) {
-                    alert('Greška pri uvozu linkova. Provjerite je li datoteka valjan JSON format.');
-                    console.error('Greška pri uvozu:', error);
-                } finally {
-                    event.target.value = '';
+            nextButton.disabled = currentLinkPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentLinkPage < totalPages) {
+                    currentLinkPage++;
+                    displayLinks(currentLinkPage);
                 }
             };
-
-            reader.readAsText(file);
-        }
-
-        function clearAllLinks() {
-            if (confirm('Jeste li sigurni da želite obrisati SVE linkove? Ova radnja se ne može poništiti.')) {
-                localStorage.removeItem('links');
-                currentPageLinks = 1;
-                displayLinks();
-                setupPaginationLinks();
-                alert('Svi linkovi su obrisani.');
-            }
+            paginationLinks.appendChild(nextButton);
         }
 
         function toggleEditModeLinks() {
-            editModeLinks = !editModeLinks;
-            const editModeBtn = document.getElementById('editModeBtnLinks');
-            
-            if (editModeLinks) {
-                editModeBtn.textContent = 'Završi uređivanje';
-                editModeBtn.classList.add('active');
-                document.querySelectorAll('.link-item').forEach(item => {
-                    item.classList.add('editing');
-                    item.setAttribute('draggable', false); // Onemogući drag kad je edit mode aktivan
-                    item.style.cursor = 'default';
-                });
-            } else {
-                editModeBtn.textContent = 'Uredi';
-                editModeBtn.classList.remove('active');
-                document.querySelectorAll('.link-item').forEach(item => {
-                    item.classList.remove('editing');
-                    item.classList.remove('editing-single');
-                    item.setAttribute('draggable', true); // Omogući drag kad je edit mode neaktivan
-                    item.style.cursor = 'grab';
+            isEditModeLinks = !isEditModeLinks;
+            const editBtn = document.getElementById('editModeBtnLinks');
+            editBtn.classList.toggle('active', isEditModeLinks);
+            editBtn.textContent = isEditModeLinks ? 'Završi uređivanje' : 'Uredi';
 
-                    const titleDisplay = item.querySelector('.link-title-display');
-                    const titleInput = item.querySelector('.edit-title-input');
-                    const editButtons = item.querySelector('.edit-buttons');
-                    const deleteBtn = item.querySelector('.delete-btn');
-                    const editBtn = item.querySelector('.edit-btn');
-
-                    if (titleDisplay) titleDisplay.style.display = 'block';
-                    if (titleInput) {
-                        titleInput.style.display = 'none';
-                        titleInput.value = titleDisplay ? titleDisplay.textContent : '';
-                    }
-                    if (editButtons) editButtons.style.display = 'none';
-                    if (deleteBtn) deleteBtn.style.display = 'block';
-                    if (editBtn) editBtn.style.display = 'block';
-                });
-            }
-            displayLinks(currentPageLinks);
-        }
-
-        function startEditLink(index) {
-            const linkItem = document.querySelector(`.link-item[data-index="${index}"]`);
-            if (!linkItem) return;
-
-            document.querySelectorAll('.link-item.editing-single').forEach(item => {
-                if (item !== linkItem) {
-                    item.classList.remove('editing-single');
-                    const titleDisplay = item.querySelector('.link-title-display');
-                    const titleInput = item.querySelector('.edit-title-input');
-                    const editButtons = item.querySelector('.edit-buttons');
-                    const deleteBtn = item.querySelector('.delete-btn');
-                    const editBtn = item.querySelector('.edit-btn');
-
-                    if (titleDisplay) titleDisplay.style.display = 'block';
-                    if (titleInput) {
-                        titleInput.style.display = 'none';
-                        titleInput.value = titleDisplay ? titleDisplay.textContent : '';
-                    }
-                    if (editButtons) editButtons.style.display = 'none';
-                    if (deleteBtn) deleteBtn.style.display = 'block';
-                    if (editBtn) editBtn.style.display = 'block';
-                }
+            // Resetuj sve "editing-single" modove kada se toggla globalni edit mod
+            document.querySelectorAll('#linkGrid .link-item').forEach(item => {
+                item.classList.remove('editing-single');
             });
 
-            linkItem.classList.add('editing-single');
-
-            const titleDisplay = linkItem.querySelector('.link-title-display');
-            const titleInput = linkItem.querySelector('.edit-title-input');
-            const deleteBtn = linkItem.querySelector('.delete-btn');
-            const editBtn = linkItem.querySelector('.edit-btn');
-            const editButtons = linkItem.querySelector('.edit-buttons');
-
-            titleDisplay.style.display = 'none';
-            titleInput.style.display = 'block';
-            titleInput.focus();
-            titleInput.select();
-
-            if (deleteBtn) deleteBtn.style.display = 'none';
-            if (editBtn) editBtn.style.display = 'none';
-            if (editButtons) editButtons.style.display = 'flex';
+            displayLinks(currentLinkPage); // Ponovno prikaži linkove da se ažuriraju gumbi
         }
 
-        function saveEditLink(index) {
+        function editLink(index) {
             const linkItem = document.querySelector(`.link-item[data-index="${index}"]`);
-            if (!linkItem) return;
-
-            const titleInput = linkItem.querySelector('.edit-title-input');
-            const newTitle = titleInput.value.trim();
-
-            if (newTitle === '') {
-                alert('Naslov linka ne smije biti prazan.');
-                return;
+            if (linkItem) {
+                linkItem.classList.add('editing-single');
+                const titleInput = linkItem.querySelector('.edit-title-input');
+                titleInput.value = links[index].title; // Postavi trenutnu vrijednost
+                titleInput.focus();
             }
+        }
 
-            let links = getLinks();
-            if (links[index]) {
-                links[index].title = newTitle;
-                saveLinks(links);
-                displayLinks(currentPageLinks);
+        function saveEditedLink(index) {
+            const linkItem = document.querySelector(`.link-item[data-index="${index}"]`);
+            if (linkItem) {
+                const newTitle = linkItem.querySelector('.edit-title-input').value.trim();
+                if (newTitle) {
+                    links[index].title = newTitle;
+                    saveLinks();
+                    linkItem.classList.remove('editing-single');
+                    displayLinks(currentLinkPage); // Osvježi prikaz
+                } else {
+                    alert('Naslov linka ne može biti prazan.');
+                }
             }
-
-            linkItem.classList.remove('editing-single');
         }
 
         function cancelEditLink(index) {
             const linkItem = document.querySelector(`.link-item[data-index="${index}"]`);
-            if (!linkItem) return;
-
-            linkItem.classList.remove('editing-single');
-
-            const titleDisplay = linkItem.querySelector('.link-title-display');
-            const titleInput = linkItem.querySelector('.edit-title-input');
-            const deleteBtn = linkItem.querySelector('.delete-btn');
-            const editBtn = linkItem.querySelector('.edit-btn');
-            const editButtons = linkItem.querySelector('.edit-buttons');
-
-            if (titleDisplay) titleDisplay.style.display = 'block';
-            if (titleInput) {
-                titleInput.style.display = 'none';
-                titleInput.value = titleDisplay ? titleDisplay.textContent : '';
+            if (linkItem) {
+                linkItem.classList.remove('editing-single');
+                displayLinks(currentLinkPage); // Osvježi prikaz da se vrati originalni naslov
             }
-            if (deleteBtn) deleteBtn.style.display = 'block';
-            if (editBtn) editBtn.style.display = 'block';
-            if (editButtons) editButtons.style.display = 'none';
         }
 
-        // --- FUNKCIJE ZA BILJEŠKE (izmijenjene za Drag & Drop) ---
-
-        function getNotes() {
-            const notesString = localStorage.getItem('notes');
-            return notesString ? JSON.parse(notesString) : [];
+        function deleteLink(index) {
+            if (confirm('Jeste li sigurni da želite obrisati ovaj link?')) {
+                links.splice(index, 1);
+                saveLinks();
+                // Ako smo obrisali zadnji link na stranici, prebaci na prethodnu
+                if (currentLinkPage > 1 && links.slice((currentLinkPage - 1) * linksPerPage, currentLinkPage * linksPerPage).length === 0) {
+                    currentLinkPage--;
+                }
+                displayLinks(currentLinkPage);
+            }
         }
 
-        function saveNotes(notes) {
+        function clearAllLinks() {
+            if (confirm('Jeste li sigurni da želite trajno obrisati SVE linkove? Ova radnja se ne može poništiti!')) {
+                links = [];
+                saveLinks();
+                currentLinkPage = 1; // Resetuj na prvu stranicu
+                displayLinks(currentLinkPage);
+                alert('Svi linkovi su obrisani.');
+            }
+        }
+
+        function exportLinks() {
+            if (links.length === 0) {
+                alert('Nema linkova za izvoz.');
+                return;
+            }
+            const dataStr = JSON.stringify(links, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mojilinkovi.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Linkovi uspješno izvezeni!');
+            // Zabilježi datum backupa
+            localStorage.setItem('lastBackupDate', new Date().toISOString());
+            displayBackupReminder(); // Ažuriraj podsjetnik nakon backupa
+        }
+
+        function importLinks(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedData) || !importedData.every(item => item.title && item.url)) {
+                        alert('Datoteka nije ispravan format za linkove.');
+                        return;
+                    }
+
+                    const confirmImport = confirm('Želite li zamijeniti sve postojeće linkove ili dodati nove linkove postojećima?\n\nOK za ZAMJENU SVIH; Odustani za DODAVANJE NOVIH.');
+                    if (confirmImport) {
+                        links = importedData;
+                        alert('Linkovi uspješno zamijenjeni!');
+                    } else {
+                        links = links.concat(importedData);
+                        alert('Linkovi uspješno dodani!');
+                    }
+                    saveLinks();
+                    currentLinkPage = 1; // Vrati na prvu stranicu nakon uvoza
+                    displayLinks(currentLinkPage);
+                } catch (error) {
+                    alert('Greška prilikom uvoza linkova: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Resetiraj input file element
+        }
+
+        // --- FUNKCIJE ZA BILJEŠKE ---
+        function saveNotes() {
             localStorage.setItem('notes', JSON.stringify(notes));
         }
 
+        function loadNotes() {
+            const storedNotes = localStorage.getItem('notes');
+            if (storedNotes) {
+                notes = JSON.parse(storedNotes);
+            }
+            displayNotes(currentNotePage);
+        }
+
         function addNote() {
-            const noteTitleInput = document.getElementById('noteTitle');
-            const noteTextInput = document.getElementById('noteText');
+            const titleInput = document.getElementById('noteTitle');
+            const contentInput = document.getElementById('noteContent');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
 
-            const title = noteTitleInput.value.trim();
-            const text = noteTextInput.value.trim();
-
-            if (text === '') {
-                alert('Molimo unesite tekst bilješke.');
-                return;
-            }
-
-            const notes = getNotes();
-            notes.push({ title: title, text: text, timestamp: new Date().toISOString(), closed: false });
-            saveNotes(notes);
-            
-            currentPageNotes = Math.ceil(notes.length / notesPerPage);
-            displayNotes(currentPageNotes);
-            setupPaginationNotes();
-
-            noteTitleInput.value = '';
-            noteTextInput.value = '';
-            closeModal('addNoteModal'); // Zatvori modal nakon dodavanja
-        }
-
-        function deleteNote(index) {
-            if (confirm('Jeste li sigurni da želite obrisati ovu bilješku?')) {
-                let notes = getNotes();
-                notes.splice(index, 1);
-                saveNotes(notes);
-
-                const totalPages = Math.ceil(notes.length / notesPerPage);
-                if (currentPageNotes > totalPages && totalPages > 0) {
-                    currentPageNotes = totalPages;
-                } else if (totalPages === 0) {
-                    currentPageNotes = 1;
-                }
-                
-                displayNotes(currentPageNotes);
-                setupPaginationNotes();
+            if (title && content) {
+                notes.push({ title, content, closed: false }); // Dodaj 'closed' property
+                saveNotes();
+                titleInput.value = '';
+                contentInput.value = '';
+                closeModal('addNoteModal');
+                displayNotes(currentNotePage);
+            } else {
+                alert('Molimo unesite i naslov i sadržaj bilješke.');
             }
         }
 
-        function displayNotes(page = currentPageNotes) {
+        function displayNotes(page) {
             const notesGrid = document.getElementById('notesGrid');
             const noNotesMessage = document.getElementById('noNotesMessage');
             notesGrid.innerHTML = '';
 
-            const allNotes = getNotes();
-            
-            if (allNotes.length === 0) {
+            if (notes.length === 0) {
                 noNotesMessage.style.display = 'block';
-                document.getElementById('paginationNotes').innerHTML = '';
-                notesGrid.classList.remove('single-item-layout'); // Ukloni layout za jednu stavku
+                document.getElementById('paginationNotes').innerHTML = ''; // Sakrij paginaciju
                 return;
             } else {
                 noNotesMessage.style.display = 'none';
             }
 
-            const startIndex = (page - 1) * notesPerPage;
-            const endIndex = startIndex + notesPerPage;
-            const notesToDisplay = allNotes.slice(startIndex, endIndex);
-
-            // Provjeri broj stavki na trenutnoj stranici za prilagodbu layouta
-            if (notesToDisplay.length === 1) {
+             // Provjeri layout za jednu stavku
+             if (notes.length === 1 && !isEditModeNotes) { // Samo ako nije u modu uređivanja
                 notesGrid.classList.add('single-item-layout');
             } else {
                 notesGrid.classList.remove('single-item-layout');
             }
 
-            notesToDisplay.forEach((note, localIndex) => {
-                const globalIndex = startIndex + localIndex;
+            const startIndex = (page - 1) * notesPerPage;
+            const endIndex = startIndex + notesPerPage;
+            const notesToDisplay = notes.slice(startIndex, endIndex);
 
+            notesToDisplay.forEach((note, indexInPage) => {
+                const globalIndex = startIndex + indexInPage;
                 const noteItem = document.createElement('div');
                 noteItem.classList.add('note-item');
-                if (note.closed) {
+                if (note.closed) { // Provjeri stanje bilješke
                     noteItem.classList.add('closed');
                 }
-                if (editModeNotes) {
-                    noteItem.classList.add('editing-notes');
-                }
-                noteItem.dataset.index = globalIndex;
-                noteItem.setAttribute('draggable', !editModeNotes); // Omogući/onemogući povlačenje ovisno o modu
-                noteItem.style.cursor = editModeNotes ? 'default' : 'grab'; // Promijeni kursor
-
-                noteItem.addEventListener('dragstart', (e) => handleDragStart(e, 'note'));
-                noteItem.addEventListener('dragleave', handleDragLeave); // Dodano za vizualni feedback
-                noteItem.addEventListener('dragend', handleDragEnd); // Dodano za čišćenje
+                noteItem.setAttribute('draggable', !isEditModeNotes); // Omogući drag samo ako nije u modu uređivanja
+                noteItem.dataset.index = globalIndex; // Dodaj data-index
 
                 noteItem.innerHTML = `
                     <div class="note-header">
-                        <h3 class="note-title-display">${note.title || 'Bez naslova'}</h3>
-                        <button class="toggle-note-btn" onclick="toggleNoteContent(${globalIndex})"></button>
+                        <h3 class="note-title-display">${note.title}</h3>
+                        <button class="toggle-note-btn" onclick="toggleNote(${globalIndex})"></button>
                     </div>
-                    <input type="text" class="edit-title-input-note" value="${note.title || ''}">
                     <div class="note-content">
-                        <p class="note-text-display">${note.text}</p>
-                        <textarea class="edit-note-textarea">${note.text}</textarea>
+                        <p class="note-text-display">${note.content}</p>
+                        <input type="text" class="edit-title-input-note" value="${note.title}">
+                        <textarea class="edit-note-textarea">${note.content}</textarea>
+                        <div class="note-edit-buttons">
+                            <button class="save-note-btn" onclick="saveEditedNote(${globalIndex})">Spremi</button>
+                            <button class="cancel-note-btn" onclick="cancelEditNote(${globalIndex})">Odustani</button>
+                        </div>
                     </div>
+                    <button class="edit-note-btn" onclick="editNote(${globalIndex})">Uredi</button>
                     <button class="delete-note-btn" onclick="deleteNote(${globalIndex})">Obriši</button>
-                    <button class="edit-note-btn" onclick="startEditNote(${globalIndex})">Uredi</button>
-                    <div class="note-edit-buttons">
-                        <button class="save-note-btn" onclick="saveEditNote(${globalIndex})">Spremi</button>
-                        <button class="cancel-note-btn" onclick="cancelEditNote(${globalIndex})">Odustani</button>
-                    </div>
                 `;
                 notesGrid.appendChild(noteItem);
             });
-            setupPaginationNotes();
-        }
 
-        function toggleNoteContent(index) {
-            const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
-            if (!noteItem) return;
-
-            noteItem.classList.toggle('closed');
-
-            let notes = getNotes();
-            if (notes[index]) {
-                notes[index].closed = noteItem.classList.contains('closed');
-                saveNotes(notes);
-            }
-        }
-
-        function setupPaginationNotes() {
-            const paginationContainer = document.getElementById('paginationNotes');
-            paginationContainer.innerHTML = '';
-            const allNotes = getNotes();
-            const pageCount = Math.ceil(allNotes.length / notesPerPage);
-
-            if (pageCount <= 1) {
-                paginationContainer.style.display = 'none';
-                return;
+            // Primijeni mod uređivanja ako je aktivan
+            if (isEditModeNotes) {
+                document.querySelectorAll('#notesGrid .note-item').forEach(item => {
+                    item.classList.add('editing-notes');
+                });
             } else {
-                paginationContainer.style.display = 'flex';
+                document.querySelectorAll('#notesGrid .note-item').forEach(item => {
+                    item.classList.remove('editing-notes');
+                });
             }
+            setupNoteDragAndDrop();
+            setupNotePagination();
+        }
+
+        function setupNoteDragAndDrop() {
+            const noteItems = document.querySelectorAll('#notesGrid .note-item');
+            noteItems.forEach(item => {
+                item.addEventListener('dragstart', handleNoteDragStart);
+                item.addEventListener('dragover', handleNoteDragOver);
+                item.addEventListener('dragleave', handleNoteDragLeave);
+                item.addEventListener('drop', handleNoteDrop);
+                item.addEventListener('dragend', handleNoteDragEnd);
+            });
+        }
+
+        function handleNoteDragStart(e) {
+            if (isEditModeNotes) {
+                e.preventDefault();
+                return;
+            }
+            draggedItem = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.index);
+            setTimeout(() => {
+                draggedItem.classList.add('dragging');
+            }, 0);
+        }
+
+        function handleNoteDragOver(e) {
+            e.preventDefault();
+            if (draggedItem && draggedItem !== e.target && e.target.classList.contains('note-item')) {
+                e.dataTransfer.dropEffect = 'move';
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function handleNoteDragLeave(e) {
+            if (e.target.classList.contains('note-item')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleNoteDrop(e) {
+            e.preventDefault();
+            if (draggedItem && draggedItem !== e.target && e.target.classList.contains('note-item')) {
+                const dropTarget = e.target;
+                const draggedIndex = parseInt(draggedItem.dataset.index);
+                const dropIndex = parseInt(dropTarget.dataset.index);
+
+                dropTarget.classList.remove('drag-over');
+                draggedItem.classList.remove('dragging');
+
+                const [movedNote] = notes.splice(draggedIndex, 1);
+                notes.splice(dropIndex, 0, movedNote);
+
+                saveNotes();
+                displayNotes(currentNotePage);
+            }
+        }
+
+        function handleNoteDragEnd(e) {
+            draggedItem.classList.remove('dragging');
+            document.querySelectorAll('.note-item.drag-over').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+            draggedItem = null;
+        }
+
+        function setupNotePagination() {
+            const paginationNotes = document.getElementById('paginationNotes');
+            paginationNotes.innerHTML = '';
+            const totalPages = Math.ceil(notes.length / notesPerPage);
+
+            if (totalPages <= 1) return;
 
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Prethodna';
-            prevButton.disabled = currentPageNotes === 1;
-            prevButton.onclick = () => goToPageNotes(currentPageNotes - 1);
-            paginationContainer.appendChild(prevButton);
-
-            for (let i = 1; i <= pageCount; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                if (i === currentPageNotes) {
-                    button.classList.add('active');
+            prevButton.disabled = currentNotePage === 1;
+            prevButton.onclick = () => {
+                if (currentNotePage > 1) {
+                    currentNotePage--;
+                    displayNotes(currentNotePage);
                 }
-                button.onclick = () => goToPageNotes(i);
-                paginationContainer.appendChild(button);
+            };
+            paginationNotes.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentNotePage) {
+                    pageButton.classList.add('active');
+                }
+                pageButton.onclick = () => {
+                    currentNotePage = i;
+                    displayNotes(currentNotePage);
+                };
+                paginationNotes.appendChild(pageButton);
             }
 
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Sljedeća';
-            nextButton.disabled = currentPageNotes === pageCount;
-            nextButton.onclick = () => goToPageNotes(currentPageNotes + 1);
-            paginationContainer.appendChild(nextButton);
-        }
-
-        function goToPageNotes(page) {
-            currentPageNotes = page;
-            displayNotes(currentPageNotes);
-            document.getElementById('notesSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function loadNotes() {
-            displayNotes(currentPageNotes);
-            setupPaginationNotes();
-        }
-
-        function exportNotes() {
-            const notes = getNotes();
-            if (notes.length === 0) {
-                alert('Nema bilješki za izvoz.');
-                return;
-            }
-
-            const dataStr = JSON.stringify(notes, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'moje_biljeske.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importNotes(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    const importedNotes = JSON.parse(e.target.result);
-                    if (!Array.isArray(importedNotes)) {
-                        alert('Datoteka ne sadrži valjan format bilješki. Očekivan je niz.');
-                        return;
-                    }
-
-                    const validImportedNotes = importedNotes.map(note => ({
-                        title: typeof note.title === 'string' ? note.title : '',
-                        text: typeof note.text === 'string' ? note.text : '',
-                        timestamp: note.timestamp || new Date().toISOString(),
-                        closed: typeof note.closed === 'boolean' ? note.closed : false
-                    })).filter(note => note.text !== '');
-
-                    if (importedNotes.length !== validImportedNotes.length) {
-                        const confirmContinue = confirm('Neke uvezene bilješke nisu valjane i bit će zanemarene. Želite li nastaviti?');
-                        if (!confirmContinue) {
-                            return;
-                        }
-                    }
-
-                    if (confirm('Želite li zamijeniti SVE postojeće bilješke s uvezenima? (OK za zamjenu, Odustani za dodavanje)')) {
-                        saveNotes(validImportedNotes);
-                        alert('Bilješke su uspješno uvezene (zamijenjene).');
-                    } else {
-                        const existingNotes = getNotes();
-                        const combinedNotes = existingNotes.concat(validImportedNotes);
-                        saveNotes(combinedNotes);
-                        alert('Bilješke su uspješno uvezene (dodane postojećim).');
-                    }
-
-                    currentPageNotes = 1;
-                    displayNotes();
-                    setupPaginationNotes();
-                } catch (error) {
-                    alert('Greška pri uvozu bilješki. Provjerite je li datoteka valjan JSON format.');
-                    console.error('Greška pri uvozu:', error);
-                } finally {
-                    event.target.value = '';
+            nextButton.disabled = currentNotePage === totalPages;
+            nextButton.onclick = () => {
+                if (currentNotePage < totalPages) {
+                    currentNotePage++;
+                    displayNotes(currentNotePage);
                 }
             };
-
-            reader.readAsText(file);
-        }
-
-        function clearAllNotes() {
-            if (confirm('Jeste li sigurni da želite obrisati SVE bilješke? Ova radnja se ne može poništiti.')) {
-                localStorage.removeItem('notes');
-                currentPageNotes = 1;
-                displayNotes();
-                setupPaginationNotes();
-                alert('Svi bilješke su obrisani.');
-            }
+            paginationNotes.appendChild(nextButton);
         }
 
         function toggleEditModeNotes() {
-            editModeNotes = !editModeNotes;
-            const editModeBtn = document.getElementById('editModeBtnNotes');
-            
-            if (editModeNotes) {
-                editModeBtn.textContent = 'Završi uređivanje';
-                editModeBtn.classList.add('active');
-                document.querySelectorAll('.note-item').forEach(item => {
-                    item.classList.add('editing-notes');
-                    item.setAttribute('draggable', false); // Onemogući drag
-                    item.style.cursor = 'default';
-                });
-            } else {
-                editModeBtn.textContent = 'Uredi';
-                editModeBtn.classList.remove('active');
-                document.querySelectorAll('.note-item').forEach(item => {
-                    item.classList.remove('editing-notes');
-                    item.classList.remove('editing-single-note');
-                    item.setAttribute('draggable', true); // Omogući drag
-                    item.style.cursor = 'grab';
+            isEditModeNotes = !isEditModeNotes;
+            const editBtn = document.getElementById('editModeBtnNotes');
+            editBtn.classList.toggle('active', isEditModeNotes);
+            editBtn.textContent = isEditModeNotes ? 'Završi uređivanje' : 'Uredi';
 
-                    const titleDisplay = item.querySelector('.note-title-display');
-                    const textDisplay = item.querySelector('.note-text-display');
-                    const titleInput = item.querySelector('.edit-title-input-note');
-                    const textAreaInput = item.querySelector('.edit-note-textarea');
-                    const editButtons = item.querySelector('.note-edit-buttons');
-                    const deleteBtn = item.querySelector('.delete-note-btn');
-                    const editBtn = item.querySelector('.edit-note-btn');
-                    const toggleBtn = item.querySelector('.toggle-note-btn');
-
-                    if (titleDisplay) titleDisplay.style.display = 'block';
-                    if (textDisplay) {
-                        if (!item.classList.contains('closed')) {
-                            textDisplay.style.display = 'block';
-                        } else {
-                            textDisplay.style.display = 'none';
-                        }
-                    }
-
-                    if (titleInput) {
-                        titleInput.style.display = 'none';
-                        titleInput.value = titleDisplay ? titleDisplay.textContent : '';
-                    }
-                    if (textAreaInput) {
-                        textAreaInput.style.display = 'none';
-                        textAreaInput.value = textDisplay ? textDisplay.textContent : '';
-                    }
-                    if (editButtons) editButtons.style.display = 'none';
-
-                    if (deleteBtn) deleteBtn.style.display = 'block';
-                    if (editBtn) editBtn.style.display = 'block';
-                    if (toggleBtn) toggleBtn.style.display = 'block';
-                });
-            }
-            displayNotes(currentPageNotes);
-        }
-
-
-        function startEditNote(index) {
-            const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
-            if (!noteItem) return;
-
-            document.querySelectorAll('.note-item.editing-single-note').forEach(item => {
-                if (item !== noteItem) {
-                    item.classList.remove('editing-single-note');
-                    const titleDisplay = item.querySelector('.note-title-display');
-                    const textDisplay = item.querySelector('.note-text-display');
-                    const titleInput = item.querySelector('.edit-title-input-note');
-                    const textAreaInput = item.querySelector('.edit-note-textarea');
-                    const editButtons = item.querySelector('.note-edit-buttons');
-                    const deleteBtn = item.querySelector('.delete-note-btn');
-                    const editBtn = item.querySelector('.edit-note-btn');
-                    const toggleBtn = item.querySelector('.toggle-note-btn');
-
-                    if (titleDisplay) titleDisplay.style.display = 'block';
-                    if (textDisplay) {
-                        let notes = getNotes();
-                        const currentNoteData = notes[parseInt(item.dataset.index)];
-                        if (currentNoteData && currentNoteData.closed) {
-                            textDisplay.style.display = 'none';
-                        } else {
-                            textDisplay.style.display = 'block';
-                        }
-                    }
-                    if (titleInput) {
-                        titleInput.style.display = 'none';
-                        titleInput.value = titleDisplay ? titleDisplay.textContent : '';
-                    }
-                    if (textAreaInput) {
-                        textAreaInput.style.display = 'none';
-                        textAreaInput.value = textDisplay ? textDisplay.textContent : '';
-                    }
-                    if (editButtons) editButtons.style.display = 'none';
-                    if (deleteBtn) deleteBtn.style.display = 'block';
-                    if (editBtn) editBtn.style.display = 'block';
-                    if (toggleBtn) toggleBtn.style.display = 'block';
-                }
+            document.querySelectorAll('#notesGrid .note-item').forEach(item => {
+                item.classList.remove('editing-single-note');
             });
-
-            noteItem.classList.add('editing-single-note');
-            noteItem.classList.remove('closed');
-            let notes = getNotes();
-            if (notes[index]) {
-                notes[index].closed = false;
-                saveNotes(notes);
-            }
-
-
-            const titleDisplay = noteItem.querySelector('.note-title-display');
-            const textDisplay = noteItem.querySelector('.note-text-display');
-            const titleInput = noteItem.querySelector('.edit-title-input-note');
-            const textAreaInput = noteItem.querySelector('.edit-note-textarea');
-            const deleteBtn = noteItem.querySelector('.delete-note-btn');
-            const editBtn = noteItem.querySelector('.edit-note-btn');
-            const toggleBtn = noteItem.querySelector('.toggle-note-btn');
-            const editButtons = noteItem.querySelector('.note-edit-buttons');
-
-            titleDisplay.style.display = 'none';
-            textDisplay.style.display = 'none';
-            titleInput.style.display = 'block';
-            textAreaInput.style.display = 'block';
-            titleInput.focus();
-            titleInput.select();
-
-            if (deleteBtn) deleteBtn.style.display = 'none';
-            if (editBtn) editBtn.style.display = 'none';
-            if (toggleBtn) toggleBtn.style.display = 'none';
-            if (editButtons) editButtons.style.display = 'flex';
+            displayNotes(currentNotePage);
         }
 
-        function saveEditNote(index) {
+        function toggleNote(index) {
             const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
-            if (!noteItem) return;
-
-            const titleInput = noteItem.querySelector('.edit-title-input-note');
-            const textAreaInput = noteItem.querySelector('.edit-note-textarea');
-            const newTitle = titleInput.value.trim();
-            const newText = textAreaInput.value.trim();
-
-            if (newText === '') {
-                alert('Tekst bilješke ne smije biti prazan.');
-                return;
+            if (noteItem) {
+                noteItem.classList.toggle('closed');
+                notes[index].closed = noteItem.classList.contains('closed'); // Ažuriraj stanje u podatcima
+                saveNotes();
             }
+        }
 
-            let notes = getNotes();
-            if (notes[index]) {
-                notes[index].title = newTitle;
-                notes[index].text = newText;
-                saveNotes(notes);
-                displayNotes(currentPageNotes);
+        function editNote(index) {
+            const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
+            if (noteItem) {
+                noteItem.classList.add('editing-single-note');
+                const titleInput = noteItem.querySelector('.edit-title-input-note');
+                const contentTextarea = noteItem.querySelector('.edit-note-textarea');
+                titleInput.value = notes[index].title;
+                contentTextarea.value = notes[index].content;
+                titleInput.focus();
             }
+        }
 
-            noteItem.classList.remove('editing-single-note');
+        function saveEditedNote(index) {
+            const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
+            if (noteItem) {
+                const newTitle = noteItem.querySelector('.edit-title-input-note').value.trim();
+                const newContent = noteItem.querySelector('.edit-note-textarea').value.trim();
+                if (newTitle && newContent) {
+                    notes[index].title = newTitle;
+                    notes[index].content = newContent;
+                    saveNotes();
+                    noteItem.classList.remove('editing-single-note');
+                    displayNotes(currentNotePage);
+                } else {
+                    alert('Naslov i sadržaj bilješke ne mogu biti prazni.');
+                }
+            }
         }
 
         function cancelEditNote(index) {
             const noteItem = document.querySelector(`.note-item[data-index="${index}"]`);
-            if (!noteItem) return;
-
-            noteItem.classList.remove('editing-single-note');
-
-            const titleDisplay = noteItem.querySelector('.note-title-display');
-            const textDisplay = noteItem.querySelector('.note-text-display');
-            const titleInput = noteItem.querySelector('.edit-title-input-note');
-            const textAreaInput = noteItem.querySelector('.edit-note-textarea');
-            const deleteBtn = noteItem.querySelector('.delete-note-btn');
-            const editBtn = noteItem.querySelector('.edit-note-btn');
-            const toggleBtn = noteItem.querySelector('.toggle-note-btn');
-            const editButtons = noteItem.querySelector('.note-edit-buttons');
-
-            if (titleDisplay) titleDisplay.style.display = 'block';
-            let notes = getNotes();
-            const currentNoteData = notes[index];
-            if (currentNoteData && currentNoteData.closed) {
-                textDisplay.style.display = 'none';
-            } else {
-                textDisplay.style.display = 'block';
+            if (noteItem) {
+                noteItem.classList.remove('editing-single-note');
+                displayNotes(currentNotePage);
             }
-
-            if (titleInput) {
-                titleInput.style.display = 'none';
-                titleInput.value = titleDisplay ? titleDisplay.textContent : '';
-            }
-            if (textAreaInput) {
-                textAreaInput.style.display = 'none';
-                textAreaInput.value = textDisplay ? textDisplay.textContent : '';
-            }
-            if (deleteBtn) deleteBtn.style.display = 'block';
-            if (editBtn) editBtn.style.display = 'block';
-            if (toggleBtn && !editModeNotes) toggleBtn.style.display = 'block';
-            if (editButtons) editButtons.style.display = 'none';
         }
+
+        function deleteNote(index) {
+            if (confirm('Jeste li sigurni da želite obrisati ovu bilješku?')) {
+                notes.splice(index, 1);
+                saveNotes();
+                // Ako smo obrisali zadnju bilješku na stranici, prebaci na prethodnu
+                if (currentNotePage > 1 && notes.slice((currentNotePage - 1) * notesPerPage, currentNotePage * notesPerPage).length === 0) {
+                    currentNotePage--;
+                }
+                displayNotes(currentNotePage);
+            }
+        }
+
+        function clearAllNotes() {
+            if (confirm('Jeste li sigurni da želite trajno obrisati SVE bilješke? Ova radnja se ne može poništiti!')) {
+                notes = [];
+                saveNotes();
+                currentNotePage = 1; // Resetuj na prvu stranicu
+                displayNotes(currentNotePage);
+                alert('Sve bilješke su obrisane.');
+            }
+        }
+
+        function exportNotes() {
+            if (notes.length === 0) {
+                alert('Nema bilješki za izvoz.');
+                return;
+            }
+            const dataStr = JSON.stringify(notes, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mojebiljeske.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Bilješke uspješno izvezene!');
+            // Zabilježi datum backupa
+            localStorage.setItem('lastBackupDate', new Date().toISOString());
+            displayBackupReminder(); // Ažuriraj podsjetnik nakon backupa
+        }
+
+        function importNotes(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedData) || !importedData.every(item => item.title && item.content)) {
+                        alert('Datoteka nije ispravan format za bilješke.');
+                        return;
+                    }
+
+                    const confirmImport = confirm('Želite li zamijeniti sve postojeće bilješke ili dodati nove bilješke postojećima?\n\nOK za ZAMJENU SVIH; Odustani za DODAVANJE NOVIH.');
+                    if (confirmImport) {
+                        notes = importedData;
+                        alert('Bilješke uspješno zamijenjene!');
+                    } else {
+                        notes = notes.concat(importedData);
+                        alert('Bilješke uspješno dodane!');
+                    }
+                    saveNotes();
+                    currentNotePage = 1; // Vrati na prvu stranicu nakon uvoza
+                    displayNotes(currentNotePage);
+                } catch (error) {
+                    alert('Greška prilikom uvoza bilješki: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Resetiraj input file element
+        }
+
+        // --- FUNKCIJE ZA BACKUP PODSJETNIK ---
+        function displayBackupReminder() {
+            const backupReminderDiv = document.getElementById('backupReminder');
+            const lastBackupDateString = localStorage.getItem('lastBackupDate');
+            let message = '';
+            let showReminder = false;
+
+            if (lastBackupDateString) {
+                const lastBackupDate = new Date(lastBackupDateString);
+                const today = new Date();
+
+                // Postavi vrijeme na 00:00:00 za preciznije izračune dana
+                lastBackupDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                const diffTime = today.getTime() - lastBackupDate.getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Broj punih dana
+
+                if (diffDays >= 7) {
+                    message = `Prošlo je **${diffDays} dana** od zadnjeg backupa! <span style="color: red;">**NAPRAVI BACKUP**</span> svojih linkova i bilješki!`;
+                    showReminder = true;
+                }
+            } else {
+                // Ako nikad nije napravljen backup
+                message = `Dobrodošli! Preporučuje se redoviti backup. <span style="color: red;">**NAPRAVI PRVI BACKUP**</span> svojih linkova i bilješki!`;
+                showReminder = true;
+            }
+
+            if (showReminder) {
+                backupReminderDiv.className = 'backup-reminder'; // Dodaj stil
+                backupReminderDiv.innerHTML = `
+                    <span>${message}</span>
+                    <button class="backup-button" onclick="initiateCombinedBackup()">Napravi Backup Sada</button>
+                    <button class="backup-button" style="background-color: #6c757d;" onclick="hideBackupReminder()">Razumijem</button>
+                `;
+                backupReminderDiv.style.display = 'flex'; // Prikaži ga
+            } else {
+                backupReminderDiv.style.display = 'none'; // Sakrij ga ako nije potreban
+            }
+        }
+
+        function hideBackupReminder() {
+            document.getElementById('backupReminder').style.display = 'none';
+        }
+
+        // Funkcija za kombinirani backup (izvozi linkove I bilješke)
+        function initiateCombinedBackup() {
+            exportLinks(); // Ovo će pozvati alert i postaviti lastBackupDate
+            exportNotes(); // Ovo će pozvati alert i opet postaviti lastBackupDate (što je ok, jer želimo datum zadnjeg bilo kojeg backupa)
+            // Možeš dodati i jedan zajednički alert na kraju ako želiš
+            alert('Backup linkova i bilješki je završen!');
+            hideBackupReminder(); // Sakrij podsjetnik nakon što korisnik napravi backup
+        }
+
+
+        // --- INICIJALIZACIJA APLIKACIJE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLinks();
+            loadNotes();
+            displayBackupReminder(); // Prikaži podsjetnik pri učitavanju
+        });
     </script>
 </body>
 </html>
