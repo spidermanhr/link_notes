@@ -139,7 +139,7 @@
             flex-wrap: wrap;
             gap: 20px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px; /* Povećana maksimalna širina */
             margin: 20px auto;
             box-sizing: border-box;
             padding: 0 20px;
@@ -151,7 +151,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
             flex: 1;
-            min-width: 300px;
+            min-width: 400px; /* Povećana minimalna širina */
         }
         h1, h2 {
             color: #0056b3;
@@ -228,7 +228,7 @@
             background-color: #c82333;
         }
         
-        /* Novi stil za "Obriši sve" gumbe */
+        /* Novi stil za "Obriši" gumbe */
         .action-buttons .delete-all-btn {
             background-color: #dc3545; /* Crvena boja */
         }
@@ -236,29 +236,38 @@
             background-color: #c82333; /* Tamnija crvena na hover */
         }
 
-        /* --- STILOVI ZA LINKOVE --- */
+        /* --- STILOVI ZA LINKOVE (ISPRAVLJENO ZA TRI STUPCA) --- */
         .link-grid {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            /* Postavljamo minimalnu širinu kolone na 250px, što bi trebalo omogućiti tri stupca.
+               Koristimo auto-fit umjesto auto-fill kako bi se stupci "skupljali"
+               ako ima manje elemenata, ali se širili ako nema dovoljno za 3. */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            justify-content: flex-start;
             padding: 10px 0;
-            min-height: 150px; /* Dodano za bolje drag/drop iskustvo kad je prazno */
+            min-height: 150px;
+            /* Automatski prikaži 1 stupac ako je preostala samo 1 stavka */
+            /* Ovo se rješava dinamički u JS-u, ali osiguravamo da se grid ne razvlači previše */
         }
+        /* Ako je samo jedna stavka, želimo da zauzme cijelu širinu kontejnera (1 stupac) */
+        .link-grid.single-item-layout {
+            grid-template-columns: 1fr;
+            max-width: 300px; /* Može se prilagoditi po želji za centriranje jedne stavke */
+            margin: 0 auto; /* Centriranje jedne stavke */
+        }
+
         .link-item {
             background-color: #e9e9e9;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(50% - 30px);
-            min-width: 250px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-            cursor: grab; /* Dodan kursor za drag */
+            cursor: grab;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
         }
         /* Stil za element koji se povlači */
@@ -349,14 +358,20 @@
         .link-item .edit-buttons .cancel-btn { background-color: #6c757d; }
 
 
-        /* --- STILOVI ZA BILJEŠKE --- */
+        /* --- STILOVI ZA BILJEŠKE (ISPRAVLJENO ZA TRI STUPCA) --- */
         .notes-grid {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            /* Postavljamo minimalnu širinu kolone na 250px. */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            justify-content: flex-start;
             padding: 10px 0;
-            min-height: 150px; /* Dodano za bolje drag/drop iskustvo kad je prazno */
+            min-height: 150px;
+        }
+        /* Ako je samo jedna stavka, želimo da zauzme cijelu širinu kontejnera (1 stupac) */
+        .notes-grid.single-item-layout {
+            grid-template-columns: 1fr;
+            max-width: 300px; /* Može se prilagoditi po želji za centriranje jedne stavke */
+            margin: 0 auto; /* Centriranje jedne stavke */
         }
         .note-item {
             background-color: #fffacd;
@@ -364,9 +379,7 @@
             border-radius: 8px;
             box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
             transform: rotate(calc(var(--rotation) * 1deg));
-            margin-bottom: 15px;
-            flex: 1 1 calc(50% - 15px);
-            min-width: 250px;
+            margin-bottom: 0; /* Uklonjeno jer grid već ima gap */
             display: flex;
             flex-direction: column;
             position: relative;
@@ -637,8 +650,9 @@
                 flex: none;
                 width: 100%;
             }
-            .link-item, .note-item {
-                flex: 1 1 calc(33.333% - 30px);
+            .link-grid, .notes-grid {
+                /* Na manjim ekranima, dopusti da auto-fit stavi 2 ili 1 stupac */
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             }
             .navbar {
                 flex-direction: column;
@@ -659,13 +673,14 @@
             }
         }
         @media (max-width: 768px) {
-            .link-item, .note-item {
-                flex: 1 1 calc(50% - 30px);
+            .link-grid, .notes-grid {
+                /* Na još manjim ekranima, minimalna širina može biti manja */
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
         }
         @media (max-width: 480px) {
-            .link-item, .note-item {
-                flex: 1 1 100%;
+            .link-grid, .notes-grid {
+                grid-template-columns: 1fr; /* Jedan stupac na najmanjim ekranima */
             }
             button, .action-buttons label.button {
                 width: 100%;
@@ -697,8 +712,7 @@
             .info-tooltip-container .tooltip-content::after {
                 right: 15px; /* Održavaj strelicu desno */
             }
-        }
-    </style>
+        </style>
 </head>
 <body>
     <nav class="navbar">
@@ -716,10 +730,10 @@
                     <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u **lokalnu memoriju (Local Storage)** web preglednika koji koristiš.</p>
                     <p>To znači da:</p>
                     <ul>
-                        <li><strong>Uvijek je otvarajte s istog mjesta, nemojte je premještati.</strong></li>
                         <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
                         <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
                         <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+                        <li>**<span style="color: red;">Vrlo važno:</span> Ne premještaj ni preimenuj ovu HTML datoteku nakon što uneseš podatke!** Ako to učiniš, tvoji spremljeni linkovi i bilješke neće biti vidljivi, jer ih preglednik povezuje s originalnom lokacijom datoteke.</li>
                         <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
                     </ul>
                 </div>
@@ -731,21 +745,13 @@
         <div class="container" id="linksSection">
             <h1>Upravitelj Linkovima</h1>
 
-            <div class="add-link-section">
-                <h2>Dodaj novi link</h2>
-                <input type="text" id="linkTitle" placeholder="Naslov linka" required>
-                <input type="url" id="linkUrl" placeholder="URL linka (npr. https://www.primjer.com)" required>
-                <button onclick="addLink()">Dodaj Link</button>
-            </div>
-
-            <hr>
-
             <div class="action-buttons">
-                <button id="editModeBtnLinks" onclick="toggleEditModeLinks()">Uredi linkove</button>
-                <button class="export-btn" onclick="exportLinks()">Izvezi linkove (.json)</button>
+                <button onclick="openModal('addLinkModal')">Dodaj</button>
+                <button id="editModeBtnLinks" onclick="toggleEditModeLinks()">Uredi</button>
+                <button class="export-btn" onclick="exportLinks()">Izvoz (.json)</button>
                 <input type="file" id="importFileLinks" accept=".json" onchange="importLinks(event)">
-                <label for="importFileLinks" class="button">Uvezi linkove (.json)</label>
-                <button class="delete-all-btn" onclick="clearAllLinks()">Obriši sve linkove</button>
+                <label for="importFileLinks" class="button">Uvoz (.json)</label>
+                <button class="delete-all-btn" onclick="clearAllLinks()">Obriši</button>
             </div>
 
             <hr>
@@ -763,21 +769,13 @@
         <div class="container" id="notesSection">
             <h1>Moje Bilješke</h1>
 
-            <div class="add-note-section">
-                <h2>Dodaj novu bilješku</h2>
-                <input type="text" id="noteTitle" placeholder="Naslov bilješke (opcionalno)">
-                <textarea id="noteText" placeholder="Unesite tekst bilješke ovdje..." rows="4" required></textarea>
-                <button onclick="addNote()">Dodaj Bilješku</button>
-            </div>
-
-            <hr>
-
             <div class="action-buttons">
-                <button id="editModeBtnNotes" onclick="toggleEditModeNotes()">Uredi bilješke</button>
-                <button class="export-btn" onclick="exportNotes()">Izvezi bilješke (.json)</button>
+                <button onclick="openModal('addNoteModal')">Dodaj</button>
+                <button id="editModeBtnNotes" onclick="toggleEditModeNotes()">Uredi</button>
+                <button class="export-btn" onclick="exportNotes()">Izvoz (.json)</button>
                 <input type="file" id="importFileNotes" accept=".json" onchange="importNotes(event)">
-                <label for="importFileNotes" class="button">Uvezi bilješke (.json)</label>
-                <button class="delete-all-btn" onclick="clearAllNotes()">Obriši sve bilješke</button>
+                <label for="importFileNotes" class="button">Uvoz (.json)</label>
+                <button class="delete-all-btn" onclick="clearAllNotes()">Obriši</button>
             </div>
 
             <hr>
@@ -805,8 +803,9 @@
             <h2>Upravitelj Linkovima</h2>
             <p>Ova sekcija ti pomaže da organiziraš svoje omiljene web stranice.</p>
 
-            <h3>1. Dodaj novi link:</h3>
+            <h3>1. Dodaj link:</h3>
             <ul>
+                <li>Klikni na gumb <strong>"Dodaj"</strong> za otvaranje obrasca.</li>
                 <li>U polje <strong>"Naslov linka"</strong> unesi naziv koji želiš dati linku (npr. "Moj omiljeni blog").</li>
                 <li>U polje <strong>"URL linka"</strong> unesi punu web adresu (npr. <code>https://www.primjer.com</code>). Obavezno mora početi s <code>http://</code> ili <code>https://</code>.</li>
                 <li>Klikni na gumb <strong>"Dodaj Link"</strong>. Link će se pojaviti na listi spremljenih linkova.</li>
@@ -815,13 +814,13 @@
             <h3>2. Spremljeni linkovi:</h3>
             <ul>
                 <li>Svi tvoji spremljeni linkovi prikazani su u mreži. Klikom na <strong>naslov linka</strong> otvaraš link u novom tabu preglednika.</li>
-                <li><strong>Paginacija:</strong> Ako imaš mnogo linkova, oni će biti podijeljeni na stranice (<strong>10 linkova po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju kroz stranice.</li>
+                <li><strong>Paginacija:</strong> Ako imaš mnogo linkova, oni će biti podijeljeni na stranice (<strong>15 linkova po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju kroz stranice.</li>
                 <li><strong>Premještanje (Drag & Drop):</strong> Linkove možeš preuređivati unutar trenutne stranice povlačenjem i ispuštanjem. Samo klikni i drži link, povuci ga na željeno mjesto i pusti. (Ovo ne radi dok je aktiviran "Način uređivanja").</li>
             </ul>
 
             <h3>3. Uređivanje i brisanje linkova (način uređivanja):</h3>
             <ol>
-                <li>Klikni na gumb <strong>"Uredi linkove"</strong>. Gumb će postati crven, a na svakom linku pojavit će se gumbi "Obriši" i "Uredi".</li>
+                <li>Klikni na gumb <strong>"Uredi"</strong>. Gumb će postati crven, a na svakom linku pojavit će se gumbi "Obriši" i "Uredi".</li>
                 <li><strong>Brisanje:</strong> Klikni na <strong>"Obriši"</strong> pored linka koji želiš ukloniti. Potvrdi brisanje.</li>
                 <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored linka. Naslov će se pretvoriti u polje za unos. Upiši novi naslov i klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene.</li>
                 <li>Kada završiš s uređivanjem, ponovno klikni na gumb <strong>"Završi uređivanje"</strong> (crveni gumb) za izlaz iz načina uređivanja.</li>
@@ -829,9 +828,9 @@
 
             <h3>4. Izvoz i uvoz linkova:</h3>
             <ul>
-                <li><strong>Izvezi linkove (.json):</strong> Klikni na <strong>"Izvezi linkove (.json)"</strong> za preuzimanje svih svojih linkova u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
-                <li><strong>Uvezi linkove (.json):</strong> Klikni na <strong>"Uvezi linkove (.json)"</strong>, odaberi JSON datoteku s linkovima sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće linkove</strong> ili da <strong>dodaš nove linkove</strong> postojećima.</li>
-                <li><strong>Obriši sve linkove:</strong> Klikni na <strong>"Obriši sve linkove"</strong> za trajno brisanje svih spremljenih linkova. Budi oprezan, ova radnja se ne može poništiti!</li>
+                <li><strong>Izvoz (.json):</strong> Klikni na <strong>"Izvoz (.json)"</strong> za preuzimanje svih svojih linkova u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
+                <li><strong>Uvoz (.json):</strong> Klikni na <strong>"Uvoz (.json)"</strong>, odaberi JSON datoteku s linkovima sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće linkove</strong> ili da <strong>dodaš nove linkove</strong> postojećima.</li>
+                <li><strong>Obriši:</strong> Klikni na <strong>"Obriši"</strong> za trajno brisanje svih spremljenih linkova. Budi oprezan, ova radnja se ne može poništiti!</li>
             </ul>
 
             <hr>
@@ -839,8 +838,9 @@
             <h2>Moje Bilješke</h2>
             <p>Ova sekcija služi za spremanje tvojih osobnih bilješki, ideja i podsjetnika.</p>
 
-            <h3>1. Dodaj novu bilješku:</h3>
+            <h3>1. Dodaj bilješku:</h3>
             <ul>
+                <li>Klikni na gumb <strong>"Dodaj"</strong> za otvaranje obrasca.</li>
                 <li>U polje <strong>"Naslov bilješke"</strong> unesi opcionalni naslov.</li>
                 <li>U polje <strong>"Unesite tekst bilješke ovdje..."</strong> unesi sadržaj bilješke.</li>
                 <li>Klikni na gumb <strong>"Dodaj Bilješku"</strong>. Bilješka će se pojaviti na listi spremljenih bilješki.</li>
@@ -850,13 +850,13 @@
             <ul>
                 <li>Svaka bilješka prikazana je kao "post-it" kartica.</li>
                 <li><strong>Otvori/Zatvori bilješku:</strong> Klikni na gumb <strong>"Otvori"</strong> (ili "Zatvori") u zaglavlju bilješke da proširiš ili skupiš njen sadržaj.</li>
-                <li><strong>Paginacija:</strong> Kao i kod linkova, ako imaš mnogo bilješki, one će biti podijeljene na stranice (<strong>10 bilješki po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju.</li>
+                <li><strong>Paginacija:</strong> Kao i kod linkova, ako imaš mnogo bilješki, one će biti podijeljene na stranice (<strong>15 bilješki po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju.</li>
                 <li><strong>Premještanje (Drag & Drop):</strong> Bilješke možeš preuređivati unutar trenutne stranice povlačenjem i ispuštanjem. Samo klikni i drži bilješku, povuci je na željeno mjesto i pusti. (Ovo ne radi dok je aktiviran "Način uređivanja").</li>
             </ul>
 
             <h3>3. Uređivanje i brisanje bilješki (način uređivanja):</h3>
             <ol>
-                <li>Klikni na gumb <strong>"Uredi bilješke"</strong>. Gumb će postati crven, a na svakoj bilješci pojavit će se gumbi "Obriši" i "Uredi".</li>
+                <li>Klikni na gumb <strong>"Uredi"</strong>. Gumb će postati crven, a na svakoj bilješci pojavit će se gumbi "Obriši" i "Uredi".</li>
                 <li><strong>Brisanje:</strong> Klikni na <strong>"Obriši"</strong> pored bilješke koju želiš ukloniti. Potvrdi brisanje.</li>
                 <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored bilješke. Naslov i tekst će se pretvoriti u polja za unos. Upiši novi naslov i/ili tekst i klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene. Bilješka će se automatski otvoriti kada je uređuješ.</li>
                 <li>Kada završiš s uređivanjem, ponovno klikni na gumb <strong>"Završi uređivanje"</strong> (crveni gumb) za izlaz iz načina uređivanja.</li>
@@ -864,9 +864,9 @@
 
             <h3>4. Izvoz i uvoz bilješki:</h3>
             <ul>
-                <li><strong>Izvezi bilješke (.json):</strong> Klikni na <strong>"Izvezi bilješke (.json)"</strong> za preuzimanje svih svojih bilješki u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
-                <li><strong>Uvezi bilješke (.json):</strong> Klikni na <strong>"Uvezi bilješke (.json)"</strong>, odaberi JSON datoteku s bilješkama sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće bilješke</strong> ili da <strong>dodaš nove bilješke</strong> postojećima.</li>
-                <li><strong>Obriši sve bilješke:</strong> Klikni na <strong>"Obriši sve bilješke"</strong> za trajno brisanje svih spremljenih bilješki. Budi oprezan, ova radnja se ne može poništiti!</li>
+                <li><strong>Izvoz (.json):</strong> Klikni na <strong>"Izvoz (.json)"</strong> za preuzimanje svih svojih bilješki u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
+                <li><strong>Uvoz (.json):</strong> Klikni na <strong>"Uvoz (.json)"</strong>, odaberi JSON datoteku s bilješkama sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće bilješke</strong> ili da <strong>dodaš nove bilješke</strong> postojećima.</li>
+                <li><strong>Obriši:</strong> Klikni na <strong>"Obriši"</strong> za trajno brisanje svih spremljenih bilješki. Budi oprezan, ova radnja se ne može poništiti!</li>
             </ul>
         </div>
     </div>
@@ -878,7 +878,6 @@
             <p>Ova jednostavna aplikacija za upravljanje linkovima i bilješkama stvorena je kao praktično rješenje za organizaciju tvojih digitalnih resursa.</p>
             <p>Omogućuje ti da:</p>
             <ul>
-                <li><strong>Uvijek je otvarajte s istog mjesta, nemojte je premještati.</strong></li>
                 <li><strong>Spremaš i organiziraš web linkove</strong> s naslovima.</li>
                 <li><strong>Zapisuješ i organiziraš osobne bilješke</strong>.</li>
                 <li>Koristiš **paginaciju** za lakše pregledavanje velikog broja stavki.</li>
@@ -913,9 +912,32 @@
                 <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
                 <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
                 <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+                <li>**<span style="color: red;">Vrlo važno:</span> Ne premještaj ni preimenuj ovu HTML datoteku nakon što uneseš podatke!** Ako to učiniš, tvoji spremljeni linkovi i bilješke neće biti vidljivi, jer ih preglednik povezuje s originalnom lokacijom datoteke.</li>
                 <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
             </ul>
             <p style="text-align: center; margin-top: 20px;"><button onclick="closeModal('firstTimeNoteModal')">Razumijem</button></p>
+        </div>
+    </div>
+
+    <div id="addLinkModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('addLinkModal')">&times;</span>
+            <h2>Dodaj Link</h2>
+            <input type="text" id="linkTitle" placeholder="Naslov linka" required>
+            <input type="url" id="linkUrl" placeholder="URL linka (npr. https://www.primjer.com)" required>
+            <button onclick="addLink()">Dodaj Link</button>
+            <button class="cancel-btn" onclick="closeModal('addLinkModal')">Odustani</button>
+        </div>
+    </div>
+
+    <div id="addNoteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('addNoteModal')">&times;</span>
+            <h2>Dodaj Bilješku</h2>
+            <input type="text" id="noteTitle" placeholder="Naslov bilješke (opcionalno)">
+            <textarea id="noteText" placeholder="Unesite tekst bilješke ovdje..." rows="4" required></textarea>
+            <button onclick="addNote()">Dodaj Bilješku</button>
+            <button class="cancel-btn" onclick="closeModal('addNoteModal')">Odustani</button>
         </div>
     </div>
 
@@ -936,6 +958,9 @@
                 const aboutModal = document.getElementById('aboutModal');
                 const authorModal = document.getElementById('authorModal');
                 const firstTimeNoteModal = document.getElementById('firstTimeNoteModal');
+                const addLinkModal = document.getElementById('addLinkModal'); // Novi modal
+                const addNoteModal = document.getElementById('addNoteModal'); // Novi modal
+
 
                 if (event.target == helpModal) {
                     closeModal('helpModal');
@@ -948,6 +973,12 @@
                 }
                 if (event.target == firstTimeNoteModal) {
                     closeModal('firstTimeNoteModal');
+                }
+                if (event.target == addLinkModal) { // Zatvori i ovaj modal
+                    closeModal('addLinkModal');
+                }
+                if (event.target == addNoteModal) { // Zatvori i ovaj modal
+                    closeModal('addNoteModal');
                 }
             }
 
@@ -962,11 +993,11 @@
         let editModeNotes = false;
 
         // PAGINACIJA ZA LINKOVE
-        const linksPerPage = 10;
+        const linksPerPage = 15; // Promijenjeno na 15
         let currentPageLinks = 1;
 
         // PAGINACIJA ZA BILJEŠKE
-        const notesPerPage = 10;
+        const notesPerPage = 15; // Promijenjeno na 15
         let currentPageNotes = 1;
 
         // Varijable za Drag & Drop
@@ -1052,7 +1083,7 @@
             
             // Pronađi originalni indeks povučenog elementa unutar trenutno prikazanih elemenata
             // Ovo je važno jer draggedItemGlobalIndex referencira originalni, globalni array
-            const draggedItemCurrentPageIndex = items.slice((type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage), (type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage) + (type === 'link' ? linksPerPage : notesPerPage))
+            const draggedItemCurrentPageIndex = items.slice((type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage), (type === 'link' ? (currentPageLinks - 1) : (currentPageLinks - 1)) * (type === 'link' ? linksPerPage : notesPerPage) + (type === 'link' ? linksPerPage : notesPerPage))
                                                    .findIndex(item => item === items[draggedItemGlobalIndex]);
 
             // Ako je dropano na prazan grid
@@ -1139,6 +1170,7 @@
 
             titleInput.value = '';
             urlInput.value = '';
+            closeModal('addLinkModal'); // Zatvori modal nakon dodavanja
         }
 
         function deleteLink(index) {
@@ -1169,6 +1201,7 @@
             if (allLinks.length === 0) {
                 noLinksMessage.style.display = 'block';
                 document.getElementById('paginationLinks').innerHTML = '';
+                linkGrid.classList.remove('single-item-layout'); // Ukloni layout za jednu stavku
                 return;
             } else {
                 noLinksMessage.style.display = 'none';
@@ -1177,6 +1210,14 @@
             const startIndex = (page - 1) * linksPerPage;
             const endIndex = startIndex + linksPerPage;
             const linksToDisplay = allLinks.slice(startIndex, endIndex);
+
+            // Provjeri broj stavki na trenutnoj stranici za prilagodbu layouta
+            if (linksToDisplay.length === 1) {
+                linkGrid.classList.add('single-item-layout');
+            } else {
+                linkGrid.classList.remove('single-item-layout');
+            }
+
 
             linksToDisplay.forEach((link, localIndex) => {
                 const globalIndex = startIndex + localIndex;
@@ -1354,7 +1395,7 @@
                     item.style.cursor = 'default';
                 });
             } else {
-                editModeBtn.textContent = 'Uredi linkove';
+                editModeBtn.textContent = 'Uredi';
                 editModeBtn.classList.remove('active');
                 document.querySelectorAll('.link-item').forEach(item => {
                     item.classList.remove('editing');
@@ -1500,6 +1541,7 @@
 
             noteTitleInput.value = '';
             noteTextInput.value = '';
+            closeModal('addNoteModal'); // Zatvori modal nakon dodavanja
         }
 
         function deleteNote(index) {
@@ -1530,6 +1572,7 @@
             if (allNotes.length === 0) {
                 noNotesMessage.style.display = 'block';
                 document.getElementById('paginationNotes').innerHTML = '';
+                notesGrid.classList.remove('single-item-layout'); // Ukloni layout za jednu stavku
                 return;
             } else {
                 noNotesMessage.style.display = 'none';
@@ -1538,6 +1581,13 @@
             const startIndex = (page - 1) * notesPerPage;
             const endIndex = startIndex + notesPerPage;
             const notesToDisplay = allNotes.slice(startIndex, endIndex);
+
+            // Provjeri broj stavki na trenutnoj stranici za prilagodbu layouta
+            if (notesToDisplay.length === 1) {
+                notesGrid.classList.add('single-item-layout');
+            } else {
+                notesGrid.classList.remove('single-item-layout');
+            }
 
             notesToDisplay.forEach((note, localIndex) => {
                 const globalIndex = startIndex + localIndex;
@@ -1720,7 +1770,7 @@
                 currentPageNotes = 1;
                 displayNotes();
                 setupPaginationNotes();
-                alert('Sve bilješke su obrisane.');
+                alert('Svi bilješke su obrisani.');
             }
         }
 
@@ -1737,7 +1787,7 @@
                     item.style.cursor = 'default';
                 });
             } else {
-                editModeBtn.textContent = 'Uredi bilješke';
+                editModeBtn.textContent = 'Uredi';
                 editModeBtn.classList.remove('active');
                 document.querySelectorAll('.note-item').forEach(item => {
                     item.classList.remove('editing-notes');
