@@ -75,3 +75,12 @@
 
 <p>Aplikacija automatski sprema tvoje podatke u lokalnu memoriju preglednika, tako da će tvoji linkovi i bilješke biti dostupni svaki put kad otvoriš aplikaciju.</p>
 <p>Slobodno eksperimentiraj s funkcionalnostima i uživaj u organiziranju!</p>
+
+<h3>Važna napomena o podacima:</h3>
+<p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u <strong>lokalnu memoriju (Local Storage) web preglednika</strong> koji koristiš. To znači da:</p>
+<ul>
+    <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
+    <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
+    <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+    <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
+</ul>
