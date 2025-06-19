@@ -553,17 +553,78 @@
             color: #666;
         }
 
-        /* Važna napomena o podacima */
-        .important-note {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-top: 30px;
-            border-radius: 4px;
-            font-size: 0.95em;
+        /* --- STILOVI ZA TOOLTIP (Važna napomena) --- */
+        .info-tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 10px; /* Razmak od gumba "Autor" */
+            cursor: pointer;
+            z-index: 1050; /* Veći z-index da bude iznad svega */
         }
-        .important-note strong {
-            color: #856404;
+        .info-tooltip-container .info-icon {
+            background-color: #ffc107; /* Žuta pozadina */
+            color: #333; /* Tamni tekst */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.2s ease;
+        }
+        .info-tooltip-container .info-icon:hover {
+            background-color: #e0a800;
+        }
+        .info-tooltip-container .tooltip-content {
+            visibility: hidden;
+            opacity: 0;
+            width: 300px; /* Širina oblačića */
+            background-color: #fefefe;
+            color: #333;
+            text-align: left;
+            border-radius: 8px;
+            padding: 15px;
+            position: absolute;
+            z-index: 1;
+            top: 120%; /* Pozicija ispod ikone */
+            right: 0; /* Poravnaj desno s ikonom */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.9em;
+            line-height: 1.5;
+            border: 1px solid #ddd;
+        }
+        /* Strelica na vrhu tooltipa, opciono */
+        .info-tooltip-container .tooltip-content::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            right: 15px; /* Poravnaj strelicu s desne strane */
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent #fefefe transparent;
+        }
+        .info-tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+        .info-tooltip-container .tooltip-content h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #0056b3;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .info-tooltip-container .tooltip-content ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+        .info-tooltip-container .tooltip-content li {
+            margin-bottom: 5px;
         }
 
         /* Responzivnost */
@@ -622,6 +683,20 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            .info-tooltip-container {
+                align-self: flex-end; /* Postavi tooltip na desni kraj */
+                margin-top: 10px;
+                margin-left: 0;
+            }
+            .info-tooltip-container .tooltip-content {
+                width: 90vw; /* Povećaj širinu na manjim ekranima */
+                right: 0;
+                left: unset; /* Resetiraj lijevi položaj */
+                transform: translateX(0%); /* Resetiraj transformaciju */
+            }
+            .info-tooltip-container .tooltip-content::after {
+                right: 15px; /* Održavaj strelicu desno */
+            }
         }
     </style>
 </head>
@@ -634,6 +709,20 @@
             <button onclick="openModal('helpModal')">Pomoć</button>
             <button onclick="openModal('aboutModal')">O aplikaciji</button>
             <button onclick="openModal('authorModal')">Autor</button>
+            <div class="info-tooltip-container">
+                <span class="info-icon">i</span>
+                <div class="tooltip-content">
+                    <h4>Važna napomena o podacima:</h4>
+                    <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u **lokalnu memoriju (Local Storage)** web preglednika koji koristiš.</p>
+                    <p>To znači da:</p>
+                    <ul>
+                        <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
+                        <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
+                        <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+                        <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -701,17 +790,6 @@
                     </div>
             </div>
         </div>
-    </div>
-
-    <div class="important-note">
-        <strong>Važna napomena o podacima:</strong>
-        <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u <strong>lokalnu memoriju (Local Storage) web preglednika</strong> koji koristiš. To znači da:</p>
-        <ul>
-            <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
-            <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
-            <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
-            <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
-        </ul>
     </div>
 
     <div id="helpModal" class="modal">
@@ -807,7 +885,7 @@
                 <li>**Izvoziš i uvoziš** podatke u JSON formatu za sigurnosnu kopiju ili prijenos između preglednika/uređaja.</li>
             </ul>
             <p>Svi podaci pohranjuju se isključivo u lokalnu memoriju tvog preglednika, osiguravajući privatnost i brzi pristup. Uživaj u organizaciji!</p>
-            <p style="text-align: right; margin-top: 20px; font-size: 0.9em; color: #666;">Verzija 0.5 | 2025</p>
+            <p style="text-align: right; margin-top: 20px; font-size: 0.9em; color: #666;">Verzija 1.0 | 2025</p>
         </div>
     </div>
 
@@ -820,6 +898,22 @@
             <p><strong>Verzija:</strong> 0.5</p>
             <p><strong>Datum:</strong> 19. lipnja 2025.</p>
             <p>Ova aplikacija je razvijena s ciljem pružanja jednostavnog i učinkovitog alata za osobnu organizaciju.</p>
+        </div>
+    </div>
+
+    <div id="firstTimeNoteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('firstTimeNoteModal')">&times;</span>
+            <h1>Važna napomena o podacima</h1>
+            <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u **lokalnu memoriju (Local Storage)** web preglednika koji koristiš.</p>
+            <p>To znači da:</p>
+            <ul>
+                <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
+                <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
+                <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+                <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
+            </ul>
+            <p style="text-align: center; margin-top: 20px;"><button onclick="closeModal('firstTimeNoteModal')">Razumijem</button></p>
         </div>
     </div>
 
@@ -838,16 +932,27 @@
             window.onclick = function(event) {
                 const helpModal = document.getElementById('helpModal');
                 const aboutModal = document.getElementById('aboutModal');
-                const authorModal = document.getElementById('authorModal'); // Novi modal
+                const authorModal = document.getElementById('authorModal');
+                const firstTimeNoteModal = document.getElementById('firstTimeNoteModal');
+
                 if (event.target == helpModal) {
                     closeModal('helpModal');
                 }
                 if (event.target == aboutModal) {
                     closeModal('aboutModal');
                 }
-                if (event.target == authorModal) { // Zatvori autor modal
+                if (event.target == authorModal) {
                     closeModal('authorModal');
                 }
+                if (event.target == firstTimeNoteModal) {
+                    closeModal('firstTimeNoteModal');
+                }
+            }
+
+            // Prikaz "Važne napomene" samo prvi put
+            const hasSeenNote = localStorage.getItem('hasSeenFirstTimeNote');
+            if (!hasSeenNote) {
+                openModal('firstTimeNoteModal');
             }
         });
 
@@ -869,6 +974,9 @@
         // --- FUNKCIJE ZA MODALNE PROZORE ---
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
+            if (modalId === 'firstTimeNoteModal') {
+                localStorage.setItem('hasSeenFirstTimeNote', 'true'); // Postavi flag nakon otvaranja
+            }
         }
 
         function closeModal(modalId) {
@@ -927,6 +1035,67 @@
             document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
             draggedItem = null;
             draggedItemGlobalIndex = -1;
+        }
+        
+        function handleDrop(e, type) {
+            e.preventDefault();
+            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
+
+            if (!draggedItem) return;
+
+            const droppedOverItem = e.target.closest('.link-item') || e.target.closest('.note-item');
+            const gridContainer = e.target.closest('.link-grid') || e.target.closest('.notes-grid');
+
+            let items = (type === 'link') ? getLinks() : getNotes();
+            
+            // Pronađi originalni indeks povučenog elementa unutar trenutno prikazanih elemenata
+            // Ovo je važno jer draggedItemGlobalIndex referencira originalni, globalni array
+            const draggedItemCurrentPageIndex = items.slice((type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage), (type === 'link' ? (currentPageLinks - 1) : (currentPageNotes - 1)) * (type === 'link' ? linksPerPage : notesPerPage) + (type === 'link' ? linksPerPage : notesPerPage))
+                                                   .findIndex(item => item === items[draggedItemGlobalIndex]);
+
+            // Ako je dropano na prazan grid
+            if (!droppedOverItem && gridContainer && gridContainer.children.length === 0) {
+                // Ako je dropano na isti prazan grid odakle je povučeno, ne radi ništa
+                if (draggedItem.parentNode.id === gridContainer.id) {
+                    return; 
+                }
+                // Logika za premještanje u prazan grid (npr. s druge stranice ili iz drugog tipa podataka)
+                // Trenutno ova aplikacija ne podržava premještanje između stranica ili tipova (link/note)
+                // Ako se element povlači na prazan grid (gdje nema drugih elemenata), 
+                // samo će se ponovno prikazati na istoj poziciji ako je s iste stranice.
+                // Za složeniju logiku premještanja u prazan grid s druge stranice,
+                // treba implementirati prijenos podataka između stranica ili čak tipova.
+                
+                // Za sada, ako je cilj prazan grid, samo osvježi prikaz.
+                if (type === 'link') displayLinks(currentPageLinks);
+                else displayNotes(currentPageNotes);
+                return;
+            }
+
+
+            // Pronađi indeks elementa na koji je dropano unutar cijelog niza
+            let droppedOverItemGlobalIndex = -1;
+            if (droppedOverItem) {
+                 droppedOverItemGlobalIndex = parseInt(droppedOverItem.dataset.index);
+            }
+
+            if (draggedItemGlobalIndex === droppedOverItemGlobalIndex || draggedItemGlobalIndex === -1) {
+                // Ako se pokušava dropati na isti element ili indeks nije validan
+                if (type === 'link') displayLinks(currentPageLinks);
+                else displayNotes(currentPageNotes);
+                return;
+            }
+
+            const [removed] = items.splice(draggedItemGlobalIndex, 1);
+            items.splice(droppedOverItemGlobalIndex, 0, removed);
+
+            if (type === 'link') {
+                saveLinks(items);
+                displayLinks(currentPageLinks);
+            } else {
+                saveNotes(items);
+                displayNotes(currentPageNotes);
+            }
         }
 
 
