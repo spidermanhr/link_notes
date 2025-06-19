@@ -13,25 +13,145 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-top: 60px; /* Dodajte padding da sadržaj ne bude ispod navbara */
         }
-        .main-wrapper { /* Novi wrapper za lijevu i desnu kolonu */
+
+        /* --- NAVBAR STILOVI --- */
+        .navbar {
             display: flex;
-            flex-wrap: wrap; /* Omogućava prelamanje kolona na manjim ekranima */
-            gap: 20px; /* Razmak između kolona */
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0056b3;
+            padding: 10px 20px;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000; /* Osigurava da je navbar iznad ostalog sadržaja */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .navbar-left .app-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white; /* Da bi naslov bio bijele boje */
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-right button {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .navbar-right button:hover {
+            background-color: #004085;
+        }
+        .navbar-right button:not(:last-child) {
+            margin-right: 10px; /* Razmak između gumba */
+        }
+
+        /* --- MODAL STILOVI --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2000; /* Higher than navbar */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            max-height: 90vh; /* Max height to allow scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .modal-content h1, .modal-content h2, .modal-content h3 {
+            color: #0056b3;
+            margin-top: 15px;
+        }
+        .modal-content h1 { text-align: center; margin-bottom: 25px;}
+        .modal-content h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px;}
+        .modal-content p, .modal-content ul, .modal-content ol {
+            margin-bottom: 10px;
+        }
+        .modal-content hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* --- POSTOJEĆI STILOVI --- */
+        .main-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
             width: 100%;
             max-width: 1200px;
             margin: 20px auto;
             box-sizing: border-box;
-            padding: 0 20px; /* Padding za rubove na većim ekranima */
+            padding: 0 20px;
         }
-        .container { /* Sada svaka sekcija postaje "kontejner" unutar wrappera */
+        .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
-            flex: 1; /* Omogućava da se kontejneri šire i skupljaju */
-            min-width: 300px; /* Minimalna širina prije prelamanja */
+            flex: 1;
+            min-width: 300px;
         }
         h1, h2 {
             color: #0056b3;
@@ -67,7 +187,6 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-        /* Specifične boje za Export/Import gumbove */
         .action-buttons .export-btn {
             background-color: #28a745;
         }
@@ -96,7 +215,7 @@
         .action-buttons label.button:hover {
             background-color: #e0a800;
         }
-        #editModeBtnLinks, #editModeBtnNotes { /* Dodani ID-evi za specifičnost */
+        #editModeBtnLinks, #editModeBtnNotes {
             background-color: #6c757d;
         }
         #editModeBtnLinks.active, #editModeBtnNotes.active {
@@ -108,6 +227,14 @@
         #editModeBtnLinks.active:hover, #editModeBtnNotes.active:hover {
             background-color: #c82333;
         }
+        
+        /* Novi stil za "Obriši sve" gumbe */
+        .action-buttons .delete-all-btn {
+            background-color: #dc3545; /* Crvena boja */
+        }
+        .action-buttons .delete-all-btn:hover {
+            background-color: #c82333; /* Tamnija crvena na hover */
+        }
 
         /* --- STILOVI ZA LINKOVE --- */
         .link-grid {
@@ -116,13 +243,14 @@
             gap: 15px;
             justify-content: flex-start;
             padding: 10px 0;
+            min-height: 150px; /* Dodano za bolje drag/drop iskustvo kad je prazno */
         }
         .link-item {
             background-color: #e9e9e9;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(50% - 30px); /* Dva linka po redu u link kontejneru */
+            flex: 1 1 calc(50% - 30px);
             min-width: 250px;
             display: flex;
             flex-direction: column;
@@ -130,7 +258,20 @@
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+            cursor: grab; /* Dodan kursor za drag */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
         }
+        /* Stil za element koji se povlači */
+        .link-item.dragging, .note-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        /* Stil za drop zonu */
+        .link-item.drag-over, .note-item.drag-over {
+            background-color: #d1ecf1; /* Svijetlo plava */
+            border: 2px dashed #007bff;
+        }
+
         .link-item a {
             text-decoration: none;
             color: #007bff;
@@ -149,8 +290,6 @@
             word-break: break-word;
             margin-bottom: 10px;
         }
-
-        /* Gumbi za linkove (Delete/Edit) */
         .link-item .delete-btn, .link-item .edit-btn {
             background-color: #dc3545;
             color: white;
@@ -168,17 +307,13 @@
         .link-item .edit-btn {
             background-color: #007bff;
         }
-
         .link-item .delete-btn { top: 10px; right: 10px; }
         .link-item .edit-btn { top: 10px; right: 80px; }
-
         .link-item.editing .delete-btn,
         .link-item.editing .edit-btn {
             opacity: 1;
             pointer-events: auto;
         }
-
-        /* Stanje uređivanja pojedinog linka */
         .link-item.editing-single .link-title-display {
             display: none;
         }
@@ -195,7 +330,7 @@
             display: block;
         }
         .link-item .edit-buttons {
-            display: none; /* Skriveno po defaultu dok ga JS ne prikaže */
+            display: none;
             justify-content: flex-end;
             margin-top: 10px;
         }
@@ -207,7 +342,7 @@
             opacity: 1;
             pointer-events: auto;
             margin-left: 5px;
-            padding: 6px 12px; /* Manji padding za gumbe unutar link itema */
+            padding: 6px 12px;
             font-size: 0.9em;
         }
         .link-item .edit-buttons .save-btn { background-color: #28a745; }
@@ -221,36 +356,35 @@
             gap: 15px;
             justify-content: flex-start;
             padding: 10px 0;
+            min-height: 150px; /* Dodano za bolje drag/drop iskustvo kad je prazno */
         }
         .note-item {
-            background-color: #fffacd; /* Svijetlo žuta - kao post-it */
+            background-color: #fffacd;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); /* Sjena za "post-it" efekt */
-            transform: rotate(calc(var(--rotation) * 1deg)); /* Lagana rotacija */
-            margin-bottom: 15px; /* Dodatni razmak */
-            flex: 1 1 calc(50% - 15px); /* Dvije bilješke po redu: 50% minus pola gap-a */
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+            transform: rotate(calc(var(--rotation) * 1deg));
+            margin-bottom: 15px;
+            flex: 1 1 calc(50% - 15px);
             min-width: 250px;
             display: flex;
             flex-direction: column;
             position: relative;
             box-sizing: border-box;
-            word-wrap: break-word; /* Prijelom dugačkih riječi */
-
-            /* Za smooth otvaranje/zatvaranje */
-            max-height: 500px; /* Dovoljno velika max visina za otvorenu bilješku */
-            transition: max-height 0.3s ease-out; /* Animacija visine */
+            word-wrap: break-word;
+            max-height: 500px;
+            transition: max-height 0.3s ease-out, background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            cursor: grab; /* Dodan kursor za drag */
         }
-        /* Stanje zatvorene bilješke */
         .note-item.closed {
-            max-height: 70px; /* Dovoljno visine za naslov i gumb */
-            padding-bottom: 15px; /* Zadrži donji padding */
+            max-height: 70px;
+            padding-bottom: 15px;
         }
         .note-item.closed .note-content {
-            display: none; /* Sakrij sadržaj (tekst) */
+            display: none;
         }
         .note-item.closed .toggle-note-btn {
-            background-color: #007bff; /* Boja za zatvoreno */
+            background-color: #007bff;
         }
         .note-item.closed .toggle-note-btn::before {
             content: 'Otvori';
@@ -258,15 +392,11 @@
         .note-item:not(.closed) .toggle-note-btn::before {
             content: 'Zatvori';
         }
-
-
-        /* Postavke za nasumičnu rotaciju */
         .note-item:nth-child(even) { --rotation: 2; }
         .note-item:nth-child(odd) { --rotation: -1; }
         .note-item:nth-child(3n) { --rotation: 3; }
         .note-item:nth-child(4n) { --rotation: -2; }
         .note-item:nth-child(5n) { --rotation: 1; }
-        /* Dodatno - neka ne bude previše rotacije u edit modu */
         .note-item.editing-single-note { transform: rotate(0deg) !important; }
 
         .note-item .note-header {
@@ -284,7 +414,7 @@
             word-break: break-word;
         }
         .note-item .toggle-note-btn {
-            background-color: #6c757d; /* Default boja za otvoreno */
+            background-color: #6c757d;
             color: white;
             border: none;
             padding: 4px 8px;
@@ -297,9 +427,8 @@
         .note-item .toggle-note-btn:hover {
             opacity: 0.8;
         }
-
         .note-item .note-content {
-            flex-grow: 1; /* Omogućava sadržaju da zauzme preostali prostor */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
@@ -307,10 +436,8 @@
             font-size: 1em;
             line-height: 1.4;
             margin-bottom: 10px;
-            white-space: pre-wrap; /* Zadržava razmake i prijelome retka */
+            white-space: pre-wrap;
         }
-
-        /* Edit mode za bilješke */
         .note-item .edit-title-input-note, .note-item .edit-note-textarea {
             width: calc(100% - 20px);
             padding: 5px;
@@ -323,7 +450,6 @@
         .note-item .edit-note-textarea {
             min-height: 80px;
         }
-
         .note-item.editing-single-note .note-title-display,
         .note-item.editing-single-note .note-text-display {
             display: none;
@@ -332,8 +458,6 @@
         .note-item.editing-single-note .edit-note-textarea {
             display: block;
         }
-
-        /* Gumbi za bilješke (Delete/Edit) */
         .note-item .delete-note-btn, .note-item .edit-note-btn {
             background-color: #dc3545;
             color: white;
@@ -342,7 +466,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.9em;
-            position: absolute; /* Pozicionirani apsolutno unutar note-itema */
+            position: absolute;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease-in-out;
@@ -351,23 +475,18 @@
         .note-item .edit-note-btn {
             background-color: #007bff;
         }
-
         .note-item .delete-note-btn { top: 10px; right: 10px; }
-        .note-item .edit-note-btn { top: 10px; right: 80px; } /* Podesi poziciju */
-
+        .note-item .edit-note-btn { top: 10px; right: 80px; }
         .note-item.editing-notes .delete-note-btn,
         .note-item.editing-notes .edit-note-btn {
             opacity: 1;
             pointer-events: auto;
         }
-        /* Sakrij toggle button kada je u edit modu */
         .note-item.editing-notes .toggle-note-btn {
             display: none;
         }
-
-        /* Stanje uređivanja pojedine bilješke */
         .note-item .note-edit-buttons {
-            display: none; /* Skriveno po defaultu */
+            display: none;
             justify-content: flex-end;
             margin-top: 10px;
         }
@@ -385,7 +504,6 @@
         .note-item .note-edit-buttons .save-note-btn { background-color: #28a745; }
         .note-item .note-edit-buttons .cancel-note-btn { background-color: #6c757d; }
 
-
         #noLinksMessage, #noNotesMessage {
             text-align: center;
             padding: 20px;
@@ -398,7 +516,7 @@
             background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
             margin: 20px 0;
         }
-        .container hr { /* Horizontalne linije unutar kontejnera su tanje */
+        .container hr {
             margin: 15px 0;
         }
 
@@ -408,7 +526,7 @@
             justify-content: center;
             margin-top: 20px;
             gap: 5px;
-            flex-wrap: wrap; /* Omogućava prelamanje gumba na manje ekrane */
+            flex-wrap: wrap;
         }
         .pagination button {
             background-color: #f0f0f0;
@@ -418,7 +536,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.9em;
-            min-width: 40px; /* Osiguraj minimalnu širinu */
+            min-width: 40px;
             text-align: center;
         }
         .pagination button:hover {
@@ -435,29 +553,56 @@
             color: #666;
         }
 
-        /* Responzivnost - kada ekran postane manji, neka se kolone prebace jedna ispod druge */
-        @media (max-width: 992px) { /* Tablet i manji ekrani */
+        /* Važna napomena o podacima */
+        .important-note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .important-note strong {
+            color: #856404;
+        }
+
+        /* Responzivnost */
+        @media (max-width: 992px) {
             .main-wrapper {
-                flex-direction: column; /* Kolone se prelamaju u vertikalni red */
+                flex-direction: column;
                 padding: 0 10px;
             }
             .container {
-                flex: none; /* Resetira flex svojstvo, preuzima punu širinu */
+                flex: none;
                 width: 100%;
             }
-            /* Na ovim ekranima, neka i linkovi i bilješke imaju 3 stupca unutar svog kontejnera */
             .link-item, .note-item {
                 flex: 1 1 calc(33.333% - 30px);
             }
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+            .navbar-right {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+            .navbar-right button {
+                flex-grow: 1;
+                margin: 0 5px;
+            }
+            body {
+                padding-top: 100px; /* Povećaj padding ako se navbar preklopi na 2 reda */
+            }
         }
-        @media (max-width: 768px) { /* Manji tableti i veći mobiteli */
-            /* Na ovim ekranima, neka i linkovi i bilješke imaju 2 stupca unutar svog kontejnera */
+        @media (max-width: 768px) {
             .link-item, .note-item {
                 flex: 1 1 calc(50% - 30px);
             }
         }
-        @media (max-width: 480px) { /* Mobiteli */
-            /* Na ovim ekranima, neka i linkovi i bilješke imaju 1 stupac */
+        @media (max-width: 480px) {
             .link-item, .note-item {
                 flex: 1 1 100%;
             }
@@ -470,12 +615,30 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            .navbar-right button {
+                margin: 0 0 10px 0; /* Stack buttons vertically */
+            }
+            .navbar-right {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span class="app-title">Linkovi i Bilješke</span>
+        </div>
+        <div class="navbar-right">
+            <button onclick="openModal('helpModal')">Pomoć</button>
+            <button onclick="openModal('aboutModal')">O aplikaciji</button>
+            <button onclick="openModal('authorModal')">Autor</button>
+        </div>
+    </nav>
+
     <div class="main-wrapper">
-        <div class="container">
+        <div class="container" id="linksSection">
             <h1>Upravitelj Linkovima</h1>
 
             <div class="add-link-section">
@@ -492,7 +655,7 @@
                 <button class="export-btn" onclick="exportLinks()">Izvezi linkove (.json)</button>
                 <input type="file" id="importFileLinks" accept=".json" onchange="importLinks(event)">
                 <label for="importFileLinks" class="button">Uvezi linkove (.json)</label>
-                <button onclick="clearAllLinks()" style="background-color: red;">Obriši sve linkove</button>
+                <button class="delete-all-btn" onclick="clearAllLinks()">Obriši sve linkove</button>
             </div>
 
             <hr>
@@ -507,7 +670,7 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container" id="notesSection">
             <h1>Moje Bilješke</h1>
 
             <div class="add-note-section">
@@ -524,7 +687,7 @@
                 <button class="export-btn" onclick="exportNotes()">Izvezi bilješke (.json)</button>
                 <input type="file" id="importFileNotes" accept=".json" onchange="importNotes(event)">
                 <label for="importFileNotes" class="button">Uvezi bilješke (.json)</label>
-                <button onclick="clearAllNotes()" style="background-color: red;">Obriši sve bilješke</button>
+                <button class="delete-all-btn" onclick="clearAllNotes()">Obriši sve bilješke</button>
             </div>
 
             <hr>
@@ -540,10 +703,152 @@
         </div>
     </div>
 
+    <div class="important-note">
+        <strong>Važna napomena o podacima:</strong>
+        <p>Ova aplikacija pohranjuje sve tvoje podatke (linkove i bilješke) isključivo u <strong>lokalnu memoriju (Local Storage) web preglednika</strong> koji koristiš. To znači da:</p>
+        <ul>
+            <li>Podaci su spremljeni samo u pregledniku na uređaju koji trenutno koristiš.</li>
+            <li>Ako istu HTML datoteku otvoriš u **drugom pregledniku** (npr. Chrome umjesto Firefoxa), to će biti **potpuno nova, prazna instanca** aplikacije. Podaci se neće automatski prenijeti između preglednika.</li>
+            <li>Slično, ako datoteku otvoriš na **drugom uređaju**, također ćeš početi s praznom aplikacijom.</li>
+            <li>Za prijenos ili sigurnosnu kopiju podataka između preglednika ili uređaja, **obavezno koristi funkcije "Izvezi linkove (.json)" i "Izvezi bilješke (.json)"** te ih potom "Uvezi" na drugom mjestu.</li>
+        </ul>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('helpModal')">&times;</span>
+            <h1>Upute za korištenje aplikacije Upravitelj Linkovima i Bilješkama</h1>
+            <p>Dobrodošli u tvoju osobnu aplikaciju za organizaciju linkova i bilješki! Aplikacija ti omogućuje da jednostavno spremaš, pregledavaš, uređuješ i brišeš web linkove i osobne bilješke. Također, možeš ih izvesti i uvesti za sigurnosnu kopiju ili prijenos.</p>
+            <p>Aplikacija se sastoji od dvije glavne sekcije: <strong>Upravitelj Linkovima</strong> (lijeva strana) i <strong>Moje Bilješke</strong> (desna strana).</p>
+
+            <hr>
+
+            <h2>Upravitelj Linkovima</h2>
+            <p>Ova sekcija ti pomaže da organiziraš svoje omiljene web stranice.</p>
+
+            <h3>1. Dodaj novi link:</h3>
+            <ul>
+                <li>U polje <strong>"Naslov linka"</strong> unesi naziv koji želiš dati linku (npr. "Moj omiljeni blog").</li>
+                <li>U polje <strong>"URL linka"</strong> unesi punu web adresu (npr. <code>https://www.primjer.com</code>). Obavezno mora početi s <code>http://</code> ili <code>https://</code>.</li>
+                <li>Klikni na gumb <strong>"Dodaj Link"</strong>. Link će se pojaviti na listi spremljenih linkova.</li>
+            </ul>
+
+            <h3>2. Spremljeni linkovi:</h3>
+            <ul>
+                <li>Svi tvoji spremljeni linkovi prikazani su u mreži. Klikom na <strong>naslov linka</strong> otvaraš link u novom tabu preglednika.</li>
+                <li><strong>Paginacija:</strong> Ako imaš mnogo linkova, oni će biti podijeljeni na stranice (<strong>10 linkova po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju kroz stranice.</li>
+                <li><strong>Premještanje (Drag & Drop):</strong> Linkove možeš preuređivati unutar trenutne stranice povlačenjem i ispuštanjem. Samo klikni i drži link, povuci ga na željeno mjesto i pusti. (Ovo ne radi dok je aktiviran "Način uređivanja").</li>
+            </ul>
+
+            <h3>3. Uređivanje i brisanje linkova (način uređivanja):</h3>
+            <ol>
+                <li>Klikni na gumb <strong>"Uredi linkove"</strong>. Gumb će postati crven, a na svakom linku pojavit će se gumbi "Obriši" i "Uredi".</li>
+                <li><strong>Brisanje:</strong> Klikni na <strong>"Obriši"</strong> pored linka koji želiš ukloniti. Potvrdi brisanje.</li>
+                <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored linka. Naslov će se pretvoriti u polje za unos. Upiši novi naslov i klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene.</li>
+                <li>Kada završiš s uređivanjem, ponovno klikni na gumb <strong>"Završi uređivanje"</strong> (crveni gumb) za izlaz iz načina uređivanja.</li>
+            </ol>
+
+            <h3>4. Izvoz i uvoz linkova:</h3>
+            <ul>
+                <li><strong>Izvezi linkove (.json):</strong> Klikni na <strong>"Izvezi linkove (.json)"</strong> za preuzimanje svih svojih linkova u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
+                <li><strong>Uvezi linkove (.json):</strong> Klikni na <strong>"Uvezi linkove (.json)"</strong>, odaberi JSON datoteku s linkovima sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće linkove</strong> ili da <strong>dodaš nove linkove</strong> postojećima.</li>
+                <li><strong>Obriši sve linkove:</strong> Klikni na <strong>"Obriši sve linkove"</strong> za trajno brisanje svih spremljenih linkova. Budi oprezan, ova radnja se ne može poništiti!</li>
+            </ul>
+
+            <hr>
+
+            <h2>Moje Bilješke</h2>
+            <p>Ova sekcija služi za spremanje tvojih osobnih bilješki, ideja i podsjetnika.</p>
+
+            <h3>1. Dodaj novu bilješku:</h3>
+            <ul>
+                <li>U polje <strong>"Naslov bilješke"</strong> unesi opcionalni naslov.</li>
+                <li>U polje <strong>"Unesite tekst bilješke ovdje..."</strong> unesi sadržaj bilješke.</li>
+                <li>Klikni na gumb <strong>"Dodaj Bilješku"</strong>. Bilješka će se pojaviti na listi spremljenih bilješki.</li>
+            </ul>
+
+            <h3>2. Spremljene bilješke:</h3>
+            <ul>
+                <li>Svaka bilješka prikazana je kao "post-it" kartica.</li>
+                <li><strong>Otvori/Zatvori bilješku:</strong> Klikni na gumb <strong>"Otvori"</strong> (ili "Zatvori") u zaglavlju bilješke da proširiš ili skupiš njen sadržaj.</li>
+                <li><strong>Paginacija:</strong> Kao i kod linkova, ako imaš mnogo bilješki, one će biti podijeljene na stranice (<strong>10 bilješki po stranici</strong>). Koristi gumbe "Prethodna", "Sljedeća" i numerirane gumbe na dnu liste za navigaciju.</li>
+                <li><strong>Premještanje (Drag & Drop):</strong> Bilješke možeš preuređivati unutar trenutne stranice povlačenjem i ispuštanjem. Samo klikni i drži bilješku, povuci je na željeno mjesto i pusti. (Ovo ne radi dok je aktiviran "Način uređivanja").</li>
+            </ul>
+
+            <h3>3. Uređivanje i brisanje bilješki (način uređivanja):</h3>
+            <ol>
+                <li>Klikni na gumb <strong>"Uredi bilješke"</strong>. Gumb će postati crven, a na svakoj bilješci pojavit će se gumbi "Obriši" i "Uredi".</li>
+                <li><strong>Brisanje:</strong> Klikni na <strong>"Obriši"</strong> pored bilješke koju želiš ukloniti. Potvrdi brisanje.</li>
+                <li><strong>Uređivanje:</strong> Klikni na <strong>"Uredi"</strong> pored bilješke. Naslov i tekst će se pretvoriti u polja za unos. Upiši novi naslov i/ili tekst i klikni <strong>"Spremi"</strong> da potvrdiš ili <strong>"Odustani"</strong> da poništiš promjene. Bilješka će se automatski otvoriti kada je uređuješ.</li>
+                <li>Kada završiš s uređivanjem, ponovno klikni na gumb <strong>"Završi uređivanje"</strong> (crveni gumb) za izlaz iz načina uređivanja.</li>
+            </ol>
+
+            <h3>4. Izvoz i uvoz bilješki:</h3>
+            <ul>
+                <li><strong>Izvezi bilješke (.json):</strong> Klikni na <strong>"Izvezi bilješke (.json)"</strong> za preuzimanje svih svojih bilješki u JSON formatu. Ovo je korisno za sigurnosnu kopiju.</li>
+                <li><strong>Uvezi bilješke (.json):</strong> Klikni na <strong>"Uvezi bilješke (.json)"</strong>, odaberi JSON datoteku s bilješkama sa svog računala. Imat ćeš opciju da <strong>zamijeniš sve postojeće bilješke</strong> ili da <strong>dodaš nove bilješke</strong> postojećima.</li>
+                <li><strong>Obriši sve bilješke:</strong> Klikni na <strong>"Obriši sve bilješke"</strong> za trajno brisanje svih spremljenih bilješki. Budi oprezan, ova radnja se ne može poništiti!</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('aboutModal')">&times;</span>
+            <h1>O aplikaciji</h1>
+            <p>Ova jednostavna aplikacija za upravljanje linkovima i bilješkama stvorena je kao praktično rješenje za organizaciju tvojih digitalnih resursa.</p>
+            <p>Omogućuje ti da:</p>
+            <ul>
+                <li><strong>Spremaš i organiziraš web linkove</strong> s naslovima.</li>
+                <li><strong>Zapisuješ i organiziraš osobne bilješke</strong>.</li>
+                <li>Koristiš **paginaciju** za lakše pregledavanje velikog broja stavki.</li>
+                <li>**Uređuješ i brišeš** pojedinačne stavke.</li>
+                <li>**Premještaš linkove i bilješke** metodom povlačenja i ispuštanja (drag & drop) unutar trenutne stranice.</li>
+                <li>**Izvoziš i uvoziš** podatke u JSON formatu za sigurnosnu kopiju ili prijenos između preglednika/uređaja.</li>
+            </ul>
+            <p>Svi podaci pohranjuju se isključivo u lokalnu memoriju tvog preglednika, osiguravajući privatnost i brzi pristup. Uživaj u organizaciji!</p>
+            <p style="text-align: right; margin-top: 20px; font-size: 0.9em; color: #666;">Verzija 0.5 | 2025</p>
+        </div>
+    </div>
+
+    <div id="authorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('authorModal')">&times;</span>
+            <h1>Informacije o autoru</h1>
+            <p><strong>Autor:</strong> Gemini (Googleov AI asistent)</p>
+            <p><strong>Nositelj ideje:</strong> Davor Đurinić</p>
+            <p><strong>Verzija:</strong> 0.5</p>
+            <p><strong>Datum:</strong> 19. lipnja 2025.</p>
+            <p>Ova aplikacija je razvijena s ciljem pružanja jednostavnog i učinkovitog alata za osobnu organizaciju.</p>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadLinks();
             loadNotes();
+
+            // Dodaj event listenere za Drag & Drop na gridove
+            document.getElementById('linkGrid').addEventListener('dragover', handleDragOver);
+            document.getElementById('linkGrid').addEventListener('drop', (e) => handleDrop(e, 'link'));
+            document.getElementById('notesGrid').addEventListener('dragover', handleDragOver);
+            document.getElementById('notesGrid').addEventListener('drop', (e) => handleDrop(e, 'note'));
+            
+            // Zatvori modal klikom izvan sadržaja
+            window.onclick = function(event) {
+                const helpModal = document.getElementById('helpModal');
+                const aboutModal = document.getElementById('aboutModal');
+                const authorModal = document.getElementById('authorModal'); // Novi modal
+                if (event.target == helpModal) {
+                    closeModal('helpModal');
+                }
+                if (event.target == aboutModal) {
+                    closeModal('aboutModal');
+                }
+                if (event.target == authorModal) { // Zatvori autor modal
+                    closeModal('authorModal');
+                }
+            }
         });
 
         let editModeLinks = false;
@@ -557,8 +862,75 @@
         const notesPerPage = 10;
         let currentPageNotes = 1;
 
+        // Varijable za Drag & Drop
+        let draggedItem = null; // Pohranjuje DOM element koji se trenutno povlači
+        let draggedItemGlobalIndex = -1; // Globalni indeks povučenog elementa u izvornom nizu
 
-        // --- FUNKCIJE ZA LINKOVE ---
+        // --- FUNKCIJE ZA MODALNE PROZORE ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+
+        // --- FUNKCIJE ZA DRAG & DROP ---
+
+        function handleDragStart(e, type) {
+            // Provjeri je li uređivanje aktivno - ako jest, ne dopusti povlačenje
+            if ((type === 'link' && editModeLinks) || (type === 'note' && editModeNotes)) {
+                e.preventDefault();
+                return;
+            }
+
+            draggedItem = e.target;
+            // Postavi globalni indeks povučenog elementa
+            draggedItemGlobalIndex = parseInt(e.target.dataset.index);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.index); // Pohrani indeks u dataTransfer
+            
+            // Dodaj klasu za vizualni feedback
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // Obavezno za omogućavanje dropa
+            e.dataTransfer.dropEffect = 'move';
+
+            const targetItem = e.target.closest('.link-item') || e.target.closest('.note-item');
+            const gridContainer = e.target.closest('.link-grid') || e.target.closest('.notes-grid');
+
+            // Ukloni drag-over klasu sa svih ostalih elemenata
+            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
+
+            if (targetItem && targetItem !== draggedItem) {
+                targetItem.classList.add('drag-over');
+            } else if (!targetItem && gridContainer && gridContainer.children.length === 0) {
+                // Ako je grid prazan i povlači se iznad njega
+                gridContainer.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('drag-over');
+            const targetItem = e.target.closest('.link-item') || e.target.closest('.note-item');
+            if (targetItem) {
+                targetItem.classList.remove('drag-over');
+            }
+        }
+
+        function handleDragEnd(e) {
+            // Ukloni sve klase za vizualni feedback
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(item => item.classList.remove('drag-over'));
+            draggedItem = null;
+            draggedItemGlobalIndex = -1;
+        }
+
+
+        // --- FUNKCIJE ZA LINKOVE (izmijenjene za Drag & Drop) ---
 
         function getLinks() {
             const linksString = localStorage.getItem('links');
@@ -590,7 +962,6 @@
             links.push({ title, url });
             saveLinks(links);
             
-            // Nakon dodavanja, idi na prvu stranicu ako je novi link na novoj stranici
             currentPageLinks = Math.ceil(links.length / linksPerPage);
             displayLinks(currentPageLinks);
             setupPaginationLinks();
@@ -605,12 +976,11 @@
                 links.splice(index, 1);
                 saveLinks(links);
 
-                // Prilagodi currentPageLinks ako je trenutna stranica postala prazna
                 const totalPages = Math.ceil(links.length / linksPerPage);
                 if (currentPageLinks > totalPages && totalPages > 0) {
                     currentPageLinks = totalPages;
                 } else if (totalPages === 0) {
-                    currentPageLinks = 1; // Ako nema više linkova, vrati na prvu stranicu
+                    currentPageLinks = 1;
                 }
 
                 displayLinks(currentPageLinks);
@@ -618,7 +988,6 @@
             }
         }
 
-        // AŽURIRANA FUNKCIJA ZA PRIKAZ LINKOVA
         function displayLinks(page = currentPageLinks) {
             const linkGrid = document.getElementById('linkGrid');
             const noLinksMessage = document.getElementById('noLinksMessage');
@@ -628,7 +997,7 @@
 
             if (allLinks.length === 0) {
                 noLinksMessage.style.display = 'block';
-                document.getElementById('paginationLinks').innerHTML = ''; // Clear pagination if no links
+                document.getElementById('paginationLinks').innerHTML = '';
                 return;
             } else {
                 noLinksMessage.style.display = 'none';
@@ -639,7 +1008,6 @@
             const linksToDisplay = allLinks.slice(startIndex, endIndex);
 
             linksToDisplay.forEach((link, localIndex) => {
-                // Važno: 'globalIndex' je stvarni indeks linka u cijelom nizu
                 const globalIndex = startIndex + localIndex;
 
                 const linkItem = document.createElement('div');
@@ -647,7 +1015,13 @@
                 if (editModeLinks) {
                     linkItem.classList.add('editing');
                 }
-                linkItem.dataset.index = globalIndex; // Koristi globalni indeks
+                linkItem.dataset.index = globalIndex;
+                linkItem.setAttribute('draggable', !editModeLinks); // Omogući/onemogući povlačenje ovisno o modu
+                linkItem.style.cursor = editModeLinks ? 'default' : 'grab'; // Promijeni kursor
+
+                linkItem.addEventListener('dragstart', (e) => handleDragStart(e, 'link'));
+                linkItem.addEventListener('dragleave', handleDragLeave); // Dodano za vizualni feedback
+                linkItem.addEventListener('dragend', handleDragEnd); // Dodano za čišćenje
 
                 linkItem.innerHTML = `
                     <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-title-display">${link.title}</a>
@@ -665,7 +1039,6 @@
             setupPaginationLinks();
         }
 
-        // Nova funkcija za postavljanje paginacije linkova
         function setupPaginationLinks() {
             const paginationContainer = document.getElementById('paginationLinks');
             paginationContainer.innerHTML = '';
@@ -673,20 +1046,18 @@
             const pageCount = Math.ceil(allLinks.length / linksPerPage);
 
             if (pageCount <= 1) {
-                paginationContainer.style.display = 'none'; // Sakrij paginaciju ako ima samo 1 stranica
+                paginationContainer.style.display = 'none';
                 return;
             } else {
                 paginationContainer.style.display = 'flex';
             }
 
-            // Gumb "Prethodna"
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Prethodna';
             prevButton.disabled = currentPageLinks === 1;
             prevButton.onclick = () => goToPageLinks(currentPageLinks - 1);
             paginationContainer.appendChild(prevButton);
 
-            // Gumbi za brojeve stranica
             for (let i = 1; i <= pageCount; i++) {
                 const button = document.createElement('button');
                 button.textContent = i;
@@ -697,7 +1068,6 @@
                 paginationContainer.appendChild(button);
             }
 
-            // Gumb "Sljedeća"
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Sljedeća';
             nextButton.disabled = currentPageLinks === pageCount;
@@ -705,12 +1075,10 @@
             paginationContainer.appendChild(nextButton);
         }
 
-        // Funkcija za prelazak na određenu stranicu linkova
         function goToPageLinks(page) {
             currentPageLinks = page;
             displayLinks(currentPageLinks);
-            // Scroll do vrha liste linkova
-            document.getElementById('linkGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('linksSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
 
@@ -778,7 +1146,7 @@
                         alert('Linkovi su uspješno uvezeni (dodani postojećim).');
                     }
 
-                    currentPageLinks = 1; // Idi na prvu stranicu nakon uvoza
+                    currentPageLinks = 1;
                     displayLinks();
                     setupPaginationLinks();
                 } catch (error) {
@@ -795,7 +1163,7 @@
         function clearAllLinks() {
             if (confirm('Jeste li sigurni da želite obrisati SVE linkove? Ova radnja se ne može poništiti.')) {
                 localStorage.removeItem('links');
-                currentPageLinks = 1; // Vrati na prvu stranicu
+                currentPageLinks = 1;
                 displayLinks();
                 setupPaginationLinks();
                 alert('Svi linkovi su obrisani.');
@@ -809,17 +1177,20 @@
             if (editModeLinks) {
                 editModeBtn.textContent = 'Završi uređivanje';
                 editModeBtn.classList.add('active');
-                // Primijeni editing klasu na SVE linkove
-                document.querySelectorAll('.link-item').forEach(item => item.classList.add('editing'));
+                document.querySelectorAll('.link-item').forEach(item => {
+                    item.classList.add('editing');
+                    item.setAttribute('draggable', false); // Onemogući drag kad je edit mode aktivan
+                    item.style.cursor = 'default';
+                });
             } else {
                 editModeBtn.textContent = 'Uredi linkove';
                 editModeBtn.classList.remove('active');
-                // Ukloni editing klase sa SVIH linkova
                 document.querySelectorAll('.link-item').forEach(item => {
                     item.classList.remove('editing');
                     item.classList.remove('editing-single');
+                    item.setAttribute('draggable', true); // Omogući drag kad je edit mode neaktivan
+                    item.style.cursor = 'grab';
 
-                    // Resetiraj prikaz inputa/displaya i gumba za sve linkove
                     const titleDisplay = item.querySelector('.link-title-display');
                     const titleInput = item.querySelector('.edit-title-input');
                     const editButtons = item.querySelector('.edit-buttons');
@@ -836,7 +1207,7 @@
                     if (editBtn) editBtn.style.display = 'block';
                 });
             }
-            displayLinks(currentPageLinks); // Osvježi prikaz linkova na trenutnoj stranici
+            displayLinks(currentPageLinks);
         }
 
         function startEditLink(index) {
@@ -925,7 +1296,7 @@
             if (editButtons) editButtons.style.display = 'none';
         }
 
-        // --- FUNKCIJE ZA BILJEŠKE ---
+        // --- FUNKCIJE ZA BILJEŠKE (izmijenjene za Drag & Drop) ---
 
         function getNotes() {
             const notesString = localStorage.getItem('notes');
@@ -970,7 +1341,7 @@
                 if (currentPageNotes > totalPages && totalPages > 0) {
                     currentPageNotes = totalPages;
                 } else if (totalPages === 0) {
-                    currentPageNotes = 1; 
+                    currentPageNotes = 1;
                 }
                 
                 displayNotes(currentPageNotes);
@@ -987,7 +1358,7 @@
             
             if (allNotes.length === 0) {
                 noNotesMessage.style.display = 'block';
-                document.getElementById('paginationNotes').innerHTML = ''; 
+                document.getElementById('paginationNotes').innerHTML = '';
                 return;
             } else {
                 noNotesMessage.style.display = 'none';
@@ -1008,7 +1379,13 @@
                 if (editModeNotes) {
                     noteItem.classList.add('editing-notes');
                 }
-                noteItem.dataset.index = globalIndex; 
+                noteItem.dataset.index = globalIndex;
+                noteItem.setAttribute('draggable', !editModeNotes); // Omogući/onemogući povlačenje ovisno o modu
+                noteItem.style.cursor = editModeNotes ? 'default' : 'grab'; // Promijeni kursor
+
+                noteItem.addEventListener('dragstart', (e) => handleDragStart(e, 'note'));
+                noteItem.addEventListener('dragleave', handleDragLeave); // Dodano za vizualni feedback
+                noteItem.addEventListener('dragend', handleDragEnd); // Dodano za čišćenje
 
                 noteItem.innerHTML = `
                     <div class="note-header">
@@ -1052,7 +1429,7 @@
             const pageCount = Math.ceil(allNotes.length / notesPerPage);
 
             if (pageCount <= 1) {
-                paginationContainer.style.display = 'none'; 
+                paginationContainer.style.display = 'none';
                 return;
             } else {
                 paginationContainer.style.display = 'flex';
@@ -1084,12 +1461,12 @@
         function goToPageNotes(page) {
             currentPageNotes = page;
             displayNotes(currentPageNotes);
-            document.getElementById('notesGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('notesSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function loadNotes() {
             displayNotes(currentPageNotes);
-            setupPaginationNotes(); 
+            setupPaginationNotes();
         }
 
         function exportNotes() {
@@ -1129,11 +1506,11 @@
                     }
 
                     const validImportedNotes = importedNotes.map(note => ({
-                        title: typeof note.title === 'string' ? note.title : '', 
+                        title: typeof note.title === 'string' ? note.title : '',
                         text: typeof note.text === 'string' ? note.text : '',
                         timestamp: note.timestamp || new Date().toISOString(),
-                        closed: typeof note.closed === 'boolean' ? note.closed : false 
-                    })).filter(note => note.text !== ''); 
+                        closed: typeof note.closed === 'boolean' ? note.closed : false
+                    })).filter(note => note.text !== '');
 
                     if (importedNotes.length !== validImportedNotes.length) {
                         const confirmContinue = confirm('Neke uvezene bilješke nisu valjane i bit će zanemarene. Želite li nastaviti?');
@@ -1152,7 +1529,7 @@
                         alert('Bilješke su uspješno uvezene (dodane postojećim).');
                     }
 
-                    currentPageNotes = 1; 
+                    currentPageNotes = 1;
                     displayNotes();
                     setupPaginationNotes();
                 } catch (error) {
@@ -1169,7 +1546,7 @@
         function clearAllNotes() {
             if (confirm('Jeste li sigurni da želite obrisati SVE bilješke? Ova radnja se ne može poništiti.')) {
                 localStorage.removeItem('notes');
-                currentPageNotes = 1; 
+                currentPageNotes = 1;
                 displayNotes();
                 setupPaginationNotes();
                 alert('Sve bilješke su obrisane.');
@@ -1183,14 +1560,19 @@
             if (editModeNotes) {
                 editModeBtn.textContent = 'Završi uređivanje';
                 editModeBtn.classList.add('active');
-                document.querySelectorAll('.note-item').forEach(item => item.classList.add('editing-notes'));
-                document.querySelectorAll('.toggle-note-btn').forEach(btn => btn.style.display = 'none');
+                document.querySelectorAll('.note-item').forEach(item => {
+                    item.classList.add('editing-notes');
+                    item.setAttribute('draggable', false); // Onemogući drag
+                    item.style.cursor = 'default';
+                });
             } else {
                 editModeBtn.textContent = 'Uredi bilješke';
                 editModeBtn.classList.remove('active');
                 document.querySelectorAll('.note-item').forEach(item => {
                     item.classList.remove('editing-notes');
-                    item.classList.remove('editing-single-note'); 
+                    item.classList.remove('editing-single-note');
+                    item.setAttribute('draggable', true); // Omogući drag
+                    item.style.cursor = 'grab';
 
                     const titleDisplay = item.querySelector('.note-title-display');
                     const textDisplay = item.querySelector('.note-text-display');
@@ -1297,7 +1679,7 @@
 
             if (deleteBtn) deleteBtn.style.display = 'none';
             if (editBtn) editBtn.style.display = 'none';
-            if (toggleBtn) toggleBtn.style.display = 'none'; 
+            if (toggleBtn) toggleBtn.style.display = 'none';
             if (editButtons) editButtons.style.display = 'flex';
         }
 
